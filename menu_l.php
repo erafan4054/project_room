@@ -18,7 +18,7 @@
           <img src="assets/dist/img/avatar5.png" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="" target="_blank" class="d-block">Admin 1</a>
+          <a href="" target="_blank" class="d-block">เจ้าของร้าน (User)</a>
         </div>
       </div>
 

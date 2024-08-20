@@ -15,7 +15,7 @@
       <!-- Sidebar user (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="image">
-          <img src="../assets/dist/img/avatar5.png" class="img-circle elevation-2" alt="User Image">
+          <img src="../assets/dist/img/avatar2.png" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
           <a href="" target="_blank" class="d-block">Admin 1</a>
@@ -37,12 +37,7 @@
             </a>
           </li>
 
-          <li class="nav-item">
-            <a href="employee.php" class="nav-link <?php if($menu=="employee"){echo "active";} ?>">
-              <i class="nav-icon fas fa-user-friends"></i>
-              <p>จัดการข้อมูลพนักงาน</p>
-            </a>
-          </li>
+          
 
           <li class="nav-item">
             <a href="room.php" class="nav-link <?php if($menu=="room"){echo "active";} ?>">

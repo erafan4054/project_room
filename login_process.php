@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     // เตรียมคำสั่งเลือก
-    $sql = "SELECT id, username, password FROM users WHERE username = ? AND password = ?";
+    $sql = "SELECT id, username, password, user_type FROM users WHERE username = ? AND password = ?";
     if ($stmt = $conn->prepare($sql)) {
         $stmt->bind_param("ss", $username, $password);
 
@@ -20,12 +20,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $stmt->store_result();
 
             if ($stmt->num_rows == 1) {
-                $stmt->bind_result($id, $username, $password);
+                $stmt->bind_result($id, $username, $password, $user_type);
                 if ($stmt->fetch()) {
                     $_SESSION['loggedin'] = true;
                     $_SESSION['id'] = $id;
                     $_SESSION['username'] = $username;
-                    header("location: admin/index.php");
+                    $_SESSION['user_type'] = $user_type;
+
+                    // ตรวจสอบ user_type และเปลี่ยนเส้นทางตามประเภท
+                    if ($user_type == 'admin') {
+                        header("location: admin/index.php");
+                    } elseif ($user_type == 'user') {
+                        header("location: index.php");
+                    } else {
+                        echo "ประเภทผู้ใช้ไม่ถูกต้อง.";
+                    }
                 }
             } else {
                 echo "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง.";

@@ -23,8 +23,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $room_price = $_POST['room_price'];
     $room_capacity = $_POST['room_capacity'];
     $room_detail = $_POST['room_detail'];
+    $room_status = 'ว่าง';
     $room_img = $_FILES['room_img']['name'] ?? null;
-    $target_dir = "uploads/";
+    $target_dir = "../uploads/";
     $target_file = $target_dir . basename($room_img);
 
     if (!is_dir($target_dir)) {
@@ -34,10 +35,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($room_img && move_uploaded_file($_FILES["room_img"]["tmp_name"], $target_file)) {
         if ($room_id) {
             // การอัพเดทข้อมูล
-            $sql = "UPDATE room_tb SET room_type='$room_type', room_price='$room_price', room_capacity='$room_capacity', room_detail='$room_detail', room_img='$room_img' WHERE room_id='$room_id'";
+            $sql = "UPDATE room_tb SET room_type='$room_type', room_price='$room_price', room_capacity='$room_capacity', room_detail='$room_detail', room_status='$room_status', room_img='$room_img' WHERE room_id='$room_id'";
         } else {
             // การเพิ่มข้อมูล
-            $sql = "INSERT INTO room_tb (room_type, room_price, room_capacity, room_detail, room_img) VALUES ('$room_type', '$room_price', '$room_detail', '$room_img')";
+            $sql = "INSERT INTO room_tb (room_type, room_price, room_capacity, room_detail, room_status, room_img) VALUES ('$room_type', '$room_price','$room_capacity', '$room_detail', '$room_status', '$room_img')";
         }
 
         if ($conn->query($sql) === TRUE) {
@@ -61,7 +62,7 @@ if (isset($_GET['delete'])) {
 // ตรวจสอบการแก้ไขข้อมูล
 $edit_id = $_GET['edit'] ?? null;
 if ($edit_id) {
-    $sql = "SELECT room_type, room_price, room_capacity, room_detail FROM room_tb WHERE room_id='$edit_id'";
+    $sql = "SELECT room_type, room_price, room_capacity, room_detail, room_status FROM room_tb WHERE room_id='$edit_id'";
     $result = $conn->query($sql);
 
     if ($result->num_rows > 0) {
@@ -73,13 +74,14 @@ if ($edit_id) {
                 document.getElementsByName('room_price')[0].value = '".$row['room_price']."';
                 document.getElementsByName('room_capacity')[0].value = '".$row['room_capacity']."';
                 document.getElementsByName('room_detail')[0].value = '".$row['room_detail']."';
+                document.getElementsByName('room_status')[0].value = '".$row['room_status']."';
             });
         </script>";
     }
 }
 
 // ดึงข้อมูลจากฐานข้อมูล
-$sql = "SELECT room_id, room_type, room_capacity, room_price, room_detail, room_img FROM room_tb";
+$sql = "SELECT room_id, room_type, room_capacity, room_price, room_detail, room_status, room_img FROM room_tb";
 $result = $conn->query($sql);
 ?>
 

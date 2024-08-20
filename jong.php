@@ -174,7 +174,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                         echo '<h5 class="card-type">' . $room['room_type'] . ' (' . $room['room_capacity'] . ' คน)</h5>';
                                         echo '<p class="card-text">' . $room['room_detail'] . '</p>';
                                         echo '<p class="card-text">ราคา : ' . $room['room_price'] . ' /ชม.</p>';
-                                        //echo '<p class="card-text">สถานะ : ' . $room[''] . '</p>';
+                                        echo '<p class="card-text">สถานะ : ' . $room['room_status'] . '</p>';
                                         echo '</div>';
                                         echo '</div>';
                                         echo '</div>';

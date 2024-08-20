@@ -28,7 +28,7 @@ $result = $conn->query($sql);
 <!-- Content Header (Page header) -->
 <section class="content-header">
   <div class="container-fluid"> 
-    <h1><i class="nav-icon fas fa-file-alt"></i>  รายงาน</h1>
+    <h1><i class="nav-icon fas fa-file-alt"></i> หน้าหลัก</h1>
   </div><!-- /.container-fluid -->
 </section>
 <!-- Main content -->
