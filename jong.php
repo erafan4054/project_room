@@ -76,6 +76,40 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 ?>
 
+<style>
+.card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: scale(1.05);
+    box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.card-img-top {
+    border-radius: 8px 8px 0 0;
+    max-height: 150px; /* ปรับความสูงของรูป */
+    object-fit: cover; /* ปรับการแสดงผลของรูปให้เต็มในกรณีที่รูปไม่ตรงกับขนาดที่กำหนด */
+}
+
+.card-body {
+    padding: 15px;
+}
+
+.card-type {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.card-text {
+    color: #666;
+}
+</style>
+
+
 <!-- Content Header (Page header) -->
 <section class="content-header">
   <div class="container-fluid"> 
@@ -85,41 +119,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <!-- Main content -->
 <section class="content">
-    <div class="card">
+    <div class="card1">
         <div class="card-header card-navy card-outline"><br>
             <form action="" method="post" enctype="multipart/form-data" class="needs-validation" novalidate> 
-                <div class="form-row">
-                        <!-- ใช้อินพุตเพื่อให้แก้ไขได้โดยไม่ต้องใส่ไอดี -->
-                        <input type="hidden" name="reserve_id" value="<?php echo isset($row['reserve_id']) ? $row['reserve_id'] : ''; ?>">
-                        <div class="col-md-3 mb-3">
-                            <label for="validationCustom01">ชื่อลูกค้า :</label>
-                            <input type="text" class="form-control" name="reserve_name" value="<?php echo isset($row['reserve_name']) ? $row['reserve_name'] : ''; ?>" required>
-                            <div class="invalid-feedback">
-                                **กรุณากรอกข้อมูล
-                            </div>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <label for="validationCustom01">เบอร์โทร :</label>
-                            <input type="text" class="form-control" name="reserve_telphone" value="<?php echo isset($row['reserve_telphone']) ? $row['reserve_telphone'] : ''; ?>" required>
-                            <div class="invalid-feedback">
-                                **กรุณากรอกข้อมูล
-                            </div>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <label for="validationCustom01">ที่อยู่ :</label>
-                            <input type="text" class="form-control" name="reserve_address" value="<?php echo isset($row['reserve_address']) ? $row['reserve_address'] : ''; ?>" required>
-                            <div class="invalid-feedback">
-                                **กรุณากรอกข้อมูล
-                            </div>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <label for="validationCustom01">ราคาห้อง :</label>
-                            <input type="text" class="form-control" name="reserve_price" value="<?php echo isset($row['reserve_price']) ? $row['reserve_price'] : ''; ?>" required>
-                            <div class="invalid-feedback">
-                                **กรุณากรอกข้อมูล
-                            </div>
-                        </div>
-                    </div>    
+
+                    <!-- ใช้อินพุตเพื่อให้แก้ไขได้โดยไม่ต้องใส่ไอดี -->
+                    <input type="hidden" name="reserve_id" value="<?php echo isset($row['reserve_id']) ? $row['reserve_id'] : ''; ?>">
+                            
                     <div class="form-row">
                         <div class="col-md-3 mb-3">
                             <label for="validationCustom03">วันที่ :</label>
@@ -162,7 +168,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <h4>เลือกห้องซ้อม :</h4>
                             <div class="row">
                                 <?php
-                                $sql = "SELECT * FROM room_tb"; // ชื่อตาราง room_tb ที่เก็บข้อมูลห้อง
+                                $sql = "SELECT * FROM room_tb"; // ตาราง room_tb ที่เก็บข้อมูลห้อง
                                 $result = $conn->query($sql);
 
                                 if ($result->num_rows > 0) {
@@ -183,6 +189,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     echo "ไม่พบข้อมูลห้อง";
                                 }
                                 ?>
+                            </div>
+                        </div>
+                    
+                    <div class="col-md-3 mb-3">
+                            <label for="validationCustom01">ชื่อลูกค้า :</label>
+                            <input type="text" class="form-control" name="reserve_name" value="<?php echo isset($row['reserve_name']) ? $row['reserve_name'] : ''; ?>" required>
+                            <div class="invalid-feedback">
+                                **กรุณากรอกข้อมูล
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="validationCustom01">เบอร์โทร :</label>
+                            <input type="text" class="form-control" name="reserve_telphone" value="<?php echo isset($row['reserve_telphone']) ? $row['reserve_telphone'] : ''; ?>" required>
+                            <div class="invalid-feedback">
+                                **กรุณากรอกข้อมูล
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="validationCustom01">ที่อยู่ :</label>
+                            <input type="text" class="form-control" name="reserve_address" value="<?php echo isset($row['reserve_address']) ? $row['reserve_address'] : ''; ?>" required>
+                            <div class="invalid-feedback">
+                                **กรุณากรอกข้อมูล
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="validationCustom01">ราคาห้อง :</label>
+                            <input type="text" class="form-control" name="reserve_price" value="<?php echo isset($row['reserve_price']) ? $row['reserve_price'] : ''; ?>" required>
+                            <div class="invalid-feedback">
+                                **กรุณากรอกข้อมูล
                             </div>
                         </div>
                     </div>

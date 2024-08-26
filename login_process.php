@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     // เตรียมคำสั่งเลือก
-    $sql = "SELECT id, username, password, user_type FROM users WHERE username = ? AND password = ?";
+    $sql = "SELECT user_id, username, password, user_type FROM users WHERE username = ? AND password = ?";
     if ($stmt = $conn->prepare($sql)) {
         $stmt->bind_param("ss", $username, $password);
 
@@ -20,10 +20,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $stmt->store_result();
 
             if ($stmt->num_rows == 1) {
-                $stmt->bind_result($id, $username, $password, $user_type);
+                $stmt->bind_result($user_id, $username, $password, $user_type);
                 if ($stmt->fetch()) {
                     $_SESSION['loggedin'] = true;
-                    $_SESSION['id'] = $id;
+                    $_SESSION['user_id'] = $user_id;
                     $_SESSION['username'] = $username;
                     $_SESSION['user_type'] = $user_type;
 

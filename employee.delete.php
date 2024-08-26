@@ -15,8 +15,8 @@ if ($conn->connect_error) {
 
 // ลบข้อมูลพนักงาน
 if (isset($_GET['delete'])) {
-    $employee_id = $_GET['delete'];
-    $sql = "DELETE FROM employee_tb WHERE employee_id='$employee_id'";
+    $user_id = $_GET['delete'];
+    $sql = "DELETE FROM users WHERE user_id='$user_id'";
 
     if ($conn->query($sql) === TRUE) {
         echo "<script>

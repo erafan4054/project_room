@@ -112,7 +112,7 @@ $result = $conn->query($sql);
           </div>
           <div class="col-md-3 mb-3">
             <label for="validationCustom01">ความจุ/คน :</label>
-            <input type="text" class="form-control" name="room_capacity" required>
+            <input  type="number" class="form-control" name="room_capacity" required>
             <div class="invalid-feedback">**กรุณากรอกข้อมูล</div>
           </div>
           <div class="col-md-3 mb-3">
