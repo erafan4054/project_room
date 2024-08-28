@@ -24,7 +24,7 @@ $result = $conn->query($sql);
   <div class="container-fluid">
     <div class="row">
       <div class="col-md-6">
-        <h1><i class="nav-icon fas fa-address-card"></i> เมนูแสดง</h1>
+        <h1><i class="nav-icon fas fa-address-card"></i> แสดงข้อมูลลูกค้า</h1>
       </div>
       <div class="col-md-6 text-right">
         <a href="jong.php?action=add" class="btn btn-success"> <!-- สีเขียวbtn-success สีแดงbtn-danger ฟ้าbtn-primary เทาbtn-secondary-->
@@ -74,10 +74,10 @@ $result = $conn->query($sql);
                           echo "<td>" . $row["reserve_address"] . "</td>";
                           echo "<td>" . $row["reserve_telphone"] . "</td>";
                           echo '<td>
-                                  <a class="btn btn-warning btn-xs" href="jong.php?edit_id=' . $row["reserve_id"] . '">
+                                  <a class="btn btn-warning btn-xs" href="jong.edit.php?edit_id=' . $row["reserve_id"] . '">
                                     <i class="fas fa-pencil-alt"></i>
                                   </a>
-                                  <a class="btn btn-danger btn-xs" href="jong.php?delete_id=' . $row["reserve_id"] . '">
+                                  <a class="btn btn-danger btn-xs" href="jong.delete.php?delete_id=' . $row["reserve_id"] . '">
                                     <i class="fas fa-trash-alt"></i>
                                   </a>
                                   <a class="btn btn-info btn-xs" href="receipt.php?id=' . $row["reserve_id"] . '" target="_blank">

@@ -81,13 +81,13 @@ $result = mysqli_query($conn, $sql);
 <!-- Content Header (Page header) -->
 <section class="content-header">
     <div class="container-fluid">
-        <h1><i class="nav-icon fas fa-laptop-medical"></i> เพิ่มข้อมูลลูกค้า</h1>
+        <h1><i class="nav-icon fas fa-laptop-medical"></i> จัดการข้อมูลจอง</h1>
     </div><!-- /.container-fluid -->
 </section>
 
 <!-- Main content -->
 <section class="content">
-    <div class="card1">
+    <div class="card1 card-custom card-sticky" id="kt_page_sticky_card">
         <div class="card-header card-navy card-outline"><br>
             <form action="" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
 
@@ -140,7 +140,10 @@ $result = mysqli_query($conn, $sql);
                         </div>
                     </div>
                 </div>
+                
+                </form>
                 <!-- ไม่มีปุ่มค้นหาอีกต่อไป เนื่องจากการ submit อัตโนมัติ -->
+
 
 
 <!-- Room selection -->
@@ -165,21 +168,21 @@ $result = mysqli_query($conn, $sql);
                     $status_row = $status_result->fetch_assoc();
                     $is_reserved = $status_row['reserved_count'] > 0;
 
+                    // แสดงข้อมูลห้องซ้อม
                     echo '<div class="col-md-4">';
-                    echo '<div class="card" id="card-' . $room['room_type'] . '" onclick="selectRoomType(\'' . $room['room_type'] . '\')">';
+                    echo '<div class="card" id="card-' . $room['room_type'] . '" onclick="openReserveModal(\'' . $room['room_type'] . '\')">';
                     echo '<img src="uploads/' . $room['room_img'] . '" class="card-img-top" alt="Room Image">';
                     echo '<div class="card-body">';
-                    echo '<h5 class="card-type">' . $room['room_type'] . ' (' . $room['room_capacity'] . ' คน)</h5>';
-                    echo '<p class="card-text">' . $room['room_detail'] . '</p>';
-                    echo '<p class="card-text">ราคา : ' . $room['room_price'] . ' /ชม.</p>';
-                    
-                    // ตรวจสอบสถานะห้อง
+                    echo '<h5 class="card-type">' . $room['room_type'] . ' (ความจุ ' . $room['room_capacity'] . ' คน)</h5>';
+                    echo '<p class="card-text">' . $room['room_detail'] . '( ราคา : ' . $room['room_price'] . ' บาท/ชม.)</p>';
+                    // echo '<p class="card-text">ราคา : ' . $room['room_price'] . ' บาท/ชม.</p>';
+
                     if ($is_reserved) {
-                        echo '<p class="card-text text-unavailable">สถานะ : ไม่ว่าง</p>';
+                        echo '<p class="text-danger">ไม่สามารถจองได้</p>';
                     } else {
-                        echo '<p class="card-text text-available">สถานะ : ว่าง</p>';
-                    }
-                    
+                        echo '<p class="text-success">พร้อมใช้งาน</p>';
+                    }  
+
                     echo '</div>';
                     echo '</div>';
                     echo '</div>';
@@ -191,60 +194,59 @@ $result = mysqli_query($conn, $sql);
         </div>
     </div>
 
+<!-- Modal -->
+<div class="modal fade" id="reserveModal" tabindex="-1" aria-labelledby="reserveModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <form action="jong.insert.php" method="post">
+    <input type="hidden" name="reserve_date" value="<?php echo htmlspecialchars($reserve_date); ?>">
+    <input type="hidden" name="reserve_time1" value="<?php echo htmlspecialchars($reserve_time1); ?>">
+    <input type="hidden" name="reserve_time2" value="<?php echo htmlspecialchars($reserve_time2); ?>">
+    <input type="hidden" name="reserve_type" value="<?php echo htmlspecialchars($reserve_type); ?>">
+    
 
-<!-- JavaScript function to update the form -->
-<script>
-function selectRoomType(roomType) {
-    document.getElementById('reserve_type').value = roomType;
-    // Submit the form to update the room selection
-    document.querySelector('form').submit();
-}
-</script>
+    <div class="modal-header">
+    <h4 class="modal-title" id="reserveModalLabel"><i class="nav-icon fas fa-plus-square"></i> เพิ่มข้อมูลลูกค้า</h4>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="history.back();" aria-label="Close"></button>
+</div>
 
-                    <div class="col-md-3 mb-3">
-                        <label for="validationCustom01">ชื่อลูกค้า :</label>
-                        <input type="text" class="form-control" name="reserve_name"
-                            value="<?php echo isset($row['reserve_name']) ? $row['reserve_name'] : ''; ?>" required>
-                        <div class="invalid-feedback">
-                            **กรุณากรอกข้อมูล
-                        </div>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <label for="validationCustom01">เบอร์โทร :</label>
-                        <input type="text" class="form-control" name="reserve_telphone"
-                            value="<?php echo isset($row['reserve_telphone']) ? $row['reserve_telphone'] : ''; ?>"
-                            required>
-                        <div class="invalid-feedback">
-                            **กรุณากรอกข้อมูล
-                        </div>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <label for="validationCustom01">ที่อยู่ :</label>
-                        <input type="text" class="form-control" name="reserve_address"
-                            value="<?php echo isset($row['reserve_address']) ? $row['reserve_address'] : ''; ?>"
-                            required>
-                        <div class="invalid-feedback">
-                            **กรุณากรอกข้อมูล
-                        </div>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <label for="validationCustom01">ราคาห้อง :</label>
-                        <input type="text" class="form-control" name="reserve_price"
-                            value="<?php echo isset($row['reserve_price']) ? $row['reserve_price'] : ''; ?>" required>
-                        <div class="invalid-feedback">
-                            **กรุณากรอกข้อมูล
-                        </div>
-                    </div>
-                </div>
 
-                <button class="btn btn-danger" type="submit">บันทึก</button>
-                <button class="btn btn-secondary" type="button"
-                    onclick="window.location.href='show.php';">ยกเลิก</button>
-            </form>
+
+    <div class="modal-body">
+        <div class="mb-3">
+            <label for="reserve_name" class="form-label">ชื่อลูกค้า: </label>
+            <input type="text" class="form-control" name="reserve_name" id="reserve_name" required>
+        </div>
+        <div class="mb-3">
+            <label for="reserve_telphone" class="form-label">เบอร์โทร: </label>
+            <input type="text" class="form-control" name="reserve_telphone" id="reserve_telphone" required>
+        </div>
+        <div class="mb-3">
+            <label for="reserve_address" class="form-label">ที่อยู่: </label>
+            <textarea type="text" class="form-control" name="reserve_address" id="reserve_address" rows="2" required></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="reserve_price" class="form-label">ราคาห้อง: </label>
+            <input type="number" class="form-control" name="reserve_price" id="reserve_price" required>
         </div>
     </div>
+    <div class="modal-footer">
+        <button class="btn btn-secondary" type="button" data-bs-dismiss="modal" onclick="history.back();">ยกเลิก</button>
+        <button type="submit" class="btn btn-danger">บันทึก</button>
     </div>
+</form>
+
+        </div>
     </div>
+</div>
+
+<script>
+function openReserveModal(roomType) {
+    document.getElementById('reserve_type').value = roomType;
+    var modal = new bootstrap.Modal(document.getElementById('reserveModal'));
+    modal.show();
+}
+</script>
 </section>
 
 <!-- /.content -->
