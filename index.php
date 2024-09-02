@@ -27,8 +27,17 @@ $result = $conn->query($sql);
 ?>
 <!-- Content Header (Page header) -->
 <section class="content-header">
-  <div class="container-fluid"> 
-    <h1><i class="nav-icon fas fa-file-alt"></i> หน้าหลัก</h1>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-6">
+      <h1><i class="nav-icon fas fa-file-alt"></i> หน้าหลัก</h1>
+    </div>
+      <div class="col-md-6 text-right">
+        <a href="jong.php?action=add" class="btn btn-danger"> <!-- สีเขียวbtn-success สีแดงbtn-danger ฟ้าbtn-primary เทาbtn-secondary-->
+          <i class="fas fa-laptop-medical"></i>  เพิ่มข้อมูล
+        </a>
+      </div>
+    </div>
   </div><!-- /.container-fluid -->
 </section>
 <!-- Main content -->

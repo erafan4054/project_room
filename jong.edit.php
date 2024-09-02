@@ -1,4 +1,5 @@
 <?php
+$menu = "jong";
 include("header.php");
 
 // การแสดงผลข้อผิดพลาด
@@ -18,83 +19,159 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// ตรวจสอบว่ามีค่า reserve_id ส่งมาหรือไม่
+// ตรวจสอบว่ามีการส่ง ID มาเพื่อต้องการแก้ไขข้อมูล
 if (isset($_GET['reserve_id'])) {
     $reserve_id = $_GET['reserve_id'];
 
-    // ดึงข้อมูลการจองจากฐานข้อมูล
+    // ดึงข้อมูลจากฐานข้อมูลตาม ID ที่ระบุ
     $sql = "SELECT * FROM reserve_tb WHERE reserve_id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $reserve_id);
     $stmt->execute();
     $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
 
-    if ($result->num_rows > 0) {
-        // แสดงข้อมูลในฟอร์มเพื่อให้แก้ไข
-        $row = $result->fetch_assoc();
-        ?>
-        <form action="jong.edit.php" method="post">
-            <input type="hidden" name="reserve_id" value="<?php echo $row['reserve_id']; ?>">
-            <label for="reserve_type">ประเภทการจอง:</label>
-            <input type="text" name="reserve_type" value="<?php echo $row['reserve_type']; ?>"><br>
-
-            <label for="reserve_name">ชื่อผู้จอง:</label>
-            <input type="text" name="reserve_name" value="<?php echo $row['reserve_name']; ?>"><br>
-
-            <label for="reserve_telphone">เบอร์โทรศัพท์:</label>
-            <input type="text" name="reserve_telphone" value="<?php echo $row['reserve_telphone']; ?>"><br>
-
-            <label for="reserve_address">ที่อยู่:</label>
-            <input type="text" name="reserve_address" value="<?php echo $row['reserve_address']; ?>"><br>
-
-            <label for="reserve_price">ราคา:</label>
-            <input type="text" name="reserve_price" value="<?php echo $row['reserve_price']; ?>"><br>
-
-            <label for="reserve_date">วันที่จอง:</label>
-            <input type="date" name="reserve_date" value="<?php echo $row['reserve_date']; ?>"><br>
-
-            <label for="reserve_time1">เวลาเริ่ม:</label>
-            <input type="time" name="reserve_time1" value="<?php echo $row['reserve_time1']; ?>"><br>
-
-            <label for="reserve_time2">เวลาสิ้นสุด:</label>
-            <input type="time" name="reserve_time2" value="<?php echo $row['reserve_time2']; ?>"><br>
-
-            <input type="submit" name="submit" value="บันทึกการแก้ไข">
-        </form>
-        <?php
-    } else {
-        echo "ไม่พบข้อมูลการจองที่ต้องการแก้ไข";
+    if (!$row) {
+        echo "ไม่พบข้อมูลที่ต้องการแก้ไข";
+        exit();
     }
-    $stmt->close();
+} else {
+    echo "ไม่พบ ID สำหรับการแก้ไข";
+    exit();
 }
 
-// อัปเดตข้อมูลในฐานข้อมูล
-if (isset($_POST['submit'])) {
-    $reserve_id = $_POST['reserve_id'];
-    $reserve_type = $_POST['reserve_type'];
-    $reserve_name = $_POST['reserve_name'];
-    $reserve_telphone = $_POST['reserve_telphone'];
-    $reserve_address = $_POST['reserve_address'];
-    $reserve_price = $_POST['reserve_price'];
-    $reserve_date = $_POST['reserve_date'];
-    $reserve_time1 = $_POST['reserve_time1'];
-    $reserve_time2 = $_POST['reserve_time2'];
+// รับค่าจากฟอร์มหลังจากส่งข้อมูลเพื่อแก้ไข
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $reserve_date = isset($_POST['reserve_date']) ? $_POST['reserve_date'] : '';
+    $reserve_time1 = isset($_POST['reserve_time1']) ? $_POST['reserve_time1'] : '';
+    $reserve_time2 = isset($_POST['reserve_time2']) ? $_POST['reserve_time2'] : '';
+    $reserve_name = isset($_POST['reserve_name']) ? $_POST['reserve_name'] : '';
+    $reserve_telphone = isset($_POST['reserve_telphone']) ? $_POST['reserve_telphone'] : '';
+    $reserve_address = isset($_POST['reserve_address']) ? $_POST['reserve_address'] : '';
+    $reserve_type = isset($_POST['reserve_type']) ? $_POST['reserve_type'] : '';
+    $reserve_price = isset($_POST['reserve_price']) ? $_POST['reserve_price'] : '';
 
-    $sql = "UPDATE reserve_tb SET reserve_type=?, reserve_name=?, reserve_telphone=?, reserve_address=?, reserve_price=?, reserve_date=?, reserve_time1=?, reserve_time2=? WHERE reserve_id=?";
+    // สร้างคำสั่ง SQL สำหรับการอัปเดตข้อมูล
+    $sql = "UPDATE reserve_tb SET reserve_date = ?, reserve_time1 = ?, reserve_time2 = ?, reserve_name = ?, reserve_telphone = ?, reserve_address = ?, reserve_type = ?, reserve_price = ? WHERE reserve_id = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssssssssi", $reserve_type, $reserve_name, $reserve_telphone, $reserve_address, $reserve_price, $reserve_date, $reserve_time1, $reserve_time2, $reserve_id);
+    $stmt->bind_param("ssssssssi", $reserve_date, $reserve_time1, $reserve_time2, $reserve_name, $reserve_telphone, $reserve_address, $reserve_type, $reserve_price, $reserve_id);
 
     if ($stmt->execute()) {
         echo "<script>
-                alert('การแก้ไขข้อมูลสำเร็จแล้ว');
-                window.location.href = 'show.php';
-              </script>";
+                        alert('แก้ไขข้อมูลสำเร็จแล้ว');
+                        window.location.href = 'show.php';
+                      </script>";
     } else {
         echo "เกิดข้อผิดพลาด: " . $stmt->error;
     }
 
+    // ปิดการเชื่อมต่อฐานข้อมูล
     $stmt->close();
+    $conn->close();
+    exit();
 }
+?>
 
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <h1><i class="nav-icon fas fa-edit"></i> แก้ไขข้อมูลจอง</h1>
+    </div><!-- /.container-fluid -->
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <div class="card card-custom card-sticky" id="kt_page_sticky_card">
+        <div class="card-header card-navy card-outline"><br>
+            <form action="jong.edit.php?reserve_id=<?php echo $reserve_id; ?>" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                <input type="hidden" name="reserve_id" value="<?php echo $reserve_id; ?>">
+
+                <div class="form-row">
+                    <div class="col-md-4 mb-3">
+                        <label for="validationCustom03">วันที่ :</label>
+                        <input type="date" class="form-control" name="reserve_date" value="<?php echo htmlspecialchars($row['reserve_date']); ?>" required>
+                        <div class="invalid-feedback">
+                            **กรุณากรอกข้อมูล
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="validationCustom02">เวลาจอง (เริ่ม) :</label>
+                        <input type="time" class="form-control" name="reserve_time1" value="<?php echo htmlspecialchars($row['reserve_time1']); ?>" required>
+                        <div class="invalid-feedback">
+                            **กรุณากรอกข้อมูล
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="validationCustom03">เวลาจอง (ถึง) :</label>
+                        <input type="time" class="form-control" name="reserve_time2" value="<?php echo htmlspecialchars($row['reserve_time2']); ?>" required>
+                        <div class="invalid-feedback">
+                            **กรุณากรอกข้อมูล
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="col-md-6 mb-3">
+                        <label for="reserve_name">ชื่อลูกค้า:</label>
+                        <input type="text" class="form-control" name="reserve_name" value="<?php echo htmlspecialchars($row['reserve_name']); ?>" required>
+                        <div class="invalid-feedback">
+                            **กรุณากรอกข้อมูล
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="reserve_telphone">เบอร์โทร:</label>
+                        <input type="text" class="form-control" name="reserve_telphone" value="<?php echo htmlspecialchars($row['reserve_telphone']); ?>" required>
+                        <div class="invalid-feedback">
+                            **กรุณากรอกข้อมูล
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="col-md-12 mb-3">
+                        <label for="reserve_address">ที่อยู่:</label>
+                        <textarea class="form-control" name="reserve_address" rows="3" required><?php echo htmlspecialchars($row['reserve_address']); ?></textarea>
+                        <div class="invalid-feedback">
+                            **กรุณากรอกข้อมูล
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="col-md-6 mb-3">
+                        <label for="reserve_type">ประเภท:</label>
+                        <input type="text" class="form-control" name="reserve_type" value="<?php echo htmlspecialchars($row['reserve_type']); ?>" required>
+                        <div class="invalid-feedback">
+                            **กรุณากรอกข้อมูล
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="reserve_price">ราคา:</label>
+                        <input type="number" class="form-control" name="reserve_price" value="<?php echo htmlspecialchars($row['reserve_price']); ?>" required>
+                        <div class="invalid-feedback">
+                            **กรุณากรอกข้อมูล
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="col-md-12 text-right">
+                        <button class="btn btn-secondary" type="button" onclick="window.history.back()">ยกเลิก</button>
+                        <button class="btn btn-primary" type="submit">บันทึก</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- /.content -->
+<?php include('footer.php'); ?>
+
+</body>
+
+</html>
+
+<?php
 $conn->close();
 ?>

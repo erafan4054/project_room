@@ -27,7 +27,7 @@ $result = $conn->query($sql);
         <h1><i class="nav-icon fas fa-address-card"></i> แสดงข้อมูลลูกค้า</h1>
       </div>
       <div class="col-md-6 text-right">
-        <a href="jong.php?action=add" class="btn btn-success"> <!-- สีเขียวbtn-success สีแดงbtn-danger ฟ้าbtn-primary เทาbtn-secondary-->
+        <a href="jong.php?action=add" class="btn btn-danger"> <!-- สีเขียวbtn-success สีแดงbtn-danger ฟ้าbtn-primary เทาbtn-secondary-->
           <i class="fas fa-laptop-medical"></i>  เพิ่มข้อมูล
         </a>
       </div>
@@ -65,7 +65,15 @@ $result = $conn->query($sql);
                           $number++;
                           echo "<tr>";
                           echo "<td>" . $number . "</td>";
-                          echo "<td>" . $row["reserve_date"] . "</td>";
+
+                          // แปลงวันที่จากฐานข้อมูลเป็นรูปแบบ DD-MM-YYYY และปี พ.ศ.
+                          $reserve_date = $row["reserve_date"];
+                          $date = new DateTime($reserve_date);
+                          $thai_year = $date->format('Y') + 543; // เพิ่ม 543 ปีเพื่อแปลงเป็น พ.ศ.
+                          $formatted_date = $date->format('d-m') . '-' . $thai_year;
+
+                          echo "<td>" . $formatted_date . "</td>";
+
                           echo "<td>" . $row["reserve_time1"] . "</td>";
                           echo "<td>" . $row["reserve_time2"] . "</td>";
                           echo "<td>" . $row["reserve_type"] . "</td>";
@@ -74,7 +82,7 @@ $result = $conn->query($sql);
                           echo "<td>" . $row["reserve_address"] . "</td>";
                           echo "<td>" . $row["reserve_telphone"] . "</td>";
                           echo '<td>
-                                  <a class="btn btn-warning btn-xs" href="jong.edit.php?edit_id=' . $row["reserve_id"] . '">
+                                  <a class="btn btn-warning btn-xs" href="jong.edit.php?reserve_id=' . $row["reserve_id"] . '">
                                     <i class="fas fa-pencil-alt"></i>
                                   </a>
                                   <a class="btn btn-danger btn-xs" href="jong.delete.php?delete_id=' . $row["reserve_id"] . '">
@@ -94,6 +102,7 @@ $result = $conn->query($sql);
               }
               $conn->close();
               ?>
+
             </tbody>
           </table>
         </div>

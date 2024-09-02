@@ -19,18 +19,20 @@ if ($conn->connect_error) {
 }
 
 // รับค่าจากฟอร์ม
-$reserve_type = isset($_POST['reserve_type']) ? $_POST['reserve_type'] : '';
-$reserve_name = isset($_POST['reserve_name']) ? $_POST['reserve_name'] : '';
-$reserve_telphone = isset($_POST['reserve_telphone']) ? $_POST['reserve_telphone'] : '';
-$reserve_address = isset($_POST['reserve_address']) ? $_POST['reserve_address'] : '';
-$reserve_price = isset($_POST['reserve_price']) ? $_POST['reserve_price'] : '';
+$reserve_id = isset($_POST['reserve_id']) ? $_POST['reserve_id'] : '';
 $reserve_date = isset($_POST['reserve_date']) ? $_POST['reserve_date'] : '';
 $reserve_time1 = isset($_POST['reserve_time1']) ? $_POST['reserve_time1'] : '';
 $reserve_time2 = isset($_POST['reserve_time2']) ? $_POST['reserve_time2'] : '';
+$reserve_name = isset($_POST['reserve_name']) ? $_POST['reserve_name'] : '';
+$reserve_telphone = isset($_POST['reserve_telphone']) ? $_POST['reserve_telphone'] : '';
+$reserve_address = isset($_POST['reserve_address']) ? $_POST['reserve_address'] : '';
+$reserve_type = isset($_POST['reserve_type']) ? $_POST['reserve_type'] : '';
+$reserve_price = isset($_POST['reserve_price']) ? $_POST['reserve_price'] : '';
+
 
 // สร้างคำสั่ง SQL สำหรับการแทรกข้อมูล
-$sql = "INSERT INTO reserve_tb (reserve_type, reserve_price, reserve_date, reserve_time1, reserve_name, reserve_address, reserve_telphone, reserve_time2) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+$sql = "INSERT INTO reserve_tb (reserve_id, reserve_date, reserve_time1, reserve_time2, reserve_name, reserve_telphone, reserve_address, reserve_type, reserve_price ) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 // เตรียมคำสั่ง SQL
 echo $sql;
@@ -40,7 +42,7 @@ if (!$stmt) {
 }
 
 // ผูกค่าตัวแปรกับคำสั่ง SQL
-$stmt->bind_param("ssssssss", $reserve_type, $reserve_price, $reserve_date, $reserve_time1, $reserve_name, $reserve_address, $reserve_telphone, $reserve_time2);
+$stmt->bind_param("issssssss", $reserve_id, $reserve_date, $reserve_time1, $reserve_time2, $reserve_name, $reserve_telphone, $reserve_address, $reserve_type, $reserve_price);
 
 // รันคำสั่ง SQL
 if ($stmt->execute()) {

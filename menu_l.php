@@ -60,7 +60,7 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="tes2.php" class="nav-link <?php if($submenu=="booking"){echo "active";} ?>">
+                <a href="jong.php" class="nav-link <?php if($submenu=="booking"){echo "active";} ?>">
                   <i class="far fa-circle nav-icon"></i>
                   <p>เมนูจอง</p>
                 </a>
