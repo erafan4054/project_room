@@ -157,7 +157,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="form-row">
                     <div class="col-md-12 text-right">
                         <button class="btn btn-secondary" type="button" onclick="window.history.back()">ยกเลิก</button>
-                        <button class="btn btn-primary" type="submit">บันทึก</button>
+                        <button class="btn btn-danger" type="submit">บันทึก</button>
                     </div>
                 </div>
             </form>

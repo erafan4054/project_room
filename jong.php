@@ -61,8 +61,8 @@ $result = mysqli_query($conn, $sql);
 
 .card-img-top {
     border-radius: 8px 8px 0 0;
-    max-height: 150px; /* ปรับความสูงของรูป */
-    object-fit: cover; /* ปรับการแสดงผลของรูปให้เต็มในกรณีที่รูปไม่ตรงกับขนาดที่กำหนด */
+    max-height: 150px;
+    object-fit: cover;
 }
 
 .card-body {
@@ -77,7 +77,61 @@ $result = mysqli_query($conn, $sql);
 .card-text {
     color: #666;
 }
+
+.card-disabled {
+    pointer-events: none;
+    opacity: 0.5;
+}
 </style>
+
+<style>
+    .modal-content {
+        border-radius: 8px; /* เพิ่มมุมโค้งมน */
+        padding: 20px; /* เพิ่ม padding ภายใน modal */
+    }
+    
+    .modal-header {
+        border-bottom: 1px solid #dee2e6; /* เพิ่มเส้นแบ่งด้านล่างของ header */
+        padding-bottom: 15px; /* เพิ่มพื้นที่ด้านล่าง */
+    }
+    
+    .modal-footer {
+        border-top: 1px solid #dee2e6; /* เพิ่มเส้นแบ่งด้านบนของ footer */
+        padding-top: 15px; /* เพิ่มพื้นที่ด้านบน */
+    }
+    
+    .modal-title {
+        font-size: 1.5rem; /* ขนาดตัวอักษรของ title */
+        font-weight: bold; /* ทำให้ตัวอักษรเป็นตัวหนา */
+    }
+    
+    .btn-close {
+        background: #f8f9fa; /* สีพื้นหลังของปุ่ม close */
+        border: none; /* ลบเส้นขอบ */
+        font-size: 1.25rem; /* ขนาดของไอคอน */
+    }
+    
+    .btn-secondary {
+        background-color: #6c757d; /* สีพื้นหลังของปุ่มยกเลิก */
+        border: none; /* ลบเส้นขอบ */
+        color: #fff; /* สีของตัวอักษร */
+    }
+    
+    .btn-secondary:hover {
+        background-color: #5a6268; /* สีพื้นหลังเมื่อ hover */
+    }
+    
+    .btn-danger {
+        background-color: #dc3545; /* สีพื้นหลังของปุ่มบันทึก */
+        border: none; /* ลบเส้นขอบ */
+        color: #fff; /* สีของตัวอักษร */
+    }
+    
+    .btn-danger:hover {
+        background-color: #c82333; /* สีพื้นหลังเมื่อ hover */
+    }
+</style>
+
 
 <!-- Content Header (Page header) -->
 <section class="content-header">
@@ -87,7 +141,7 @@ $result = mysqli_query($conn, $sql);
         <h1><i class="nav-icon fas fa-laptop-medical"></i> จัดการข้อมูลจอง</h1>
         </div>
       <div class="col-md-6 text-right">
-        <a href="show.php?action=add" class="btn btn-danger"> <!-- สีเขียวbtn-success สีแดงbtn-danger ฟ้าbtn-primary เทาbtn-secondary-->
+        <a href="show.php?action=add" class="btn btn-danger">
           <i class="nav-icon fas fa-address-card"></i>  แสดงข้อมูลทั้งหมด
         </a>
       </div>
@@ -112,22 +166,50 @@ $result = mysqli_query($conn, $sql);
                         </div>
                     </div>
                     <div class="col-md-4 mb-3">
-                        <label for="validationCustom02">เวลาจอง (เริ่ม) :</label>
-                        <input type="time" class="form-control" name="reserve_time1" value="<?php echo $reserve_time1; ?>" required onchange="this.form.submit();">
+                        <label for="validationCustom02">เวลา (เริ่ม) :</label>
+                        <select class="form-control" name="reserve_time1" required onchange="this.form.submit();">
+                            <option value="">--:--</option>
+                            <?php 
+                            // ตรวจสอบค่า reserve_time1 ถ้ามีค่าแล้วให้เลือกค่านั้น
+                            for ($hour = 10; $hour <= 20; $hour++) {
+                                for ($minute = 0; $minute < 60; $minute += 30) {
+                                    $time = sprintf('%02d:%02d', $hour, $minute);
+                                    // ตรวจสอบว่าค่านี้ตรงกับค่าที่ถูกเก็บไว้หรือไม่
+                                    $selected = ($time == $reserve_time1) ? "selected" : "";
+                                    echo "<option value='$time' $selected>$time</option>";
+                                }
+                            }
+                            ?>
+                        </select>
                         <div class="invalid-feedback">
                             **กรุณากรอกข้อมูล
                         </div>
                     </div>
+
                     <div class="col-md-4 mb-3">
-                        <label for="validationCustom03">เวลาจอง (ถึง) :</label>
-                        <input type="time" class="form-control" name="reserve_time2" value="<?php echo $reserve_time2; ?>" required onchange="this.form.submit();">
+                        <label for="validationCustom03">เวลา (ถึง) :</label>
+                        <select class="form-control" name="reserve_time2" required onchange="this.form.submit();">
+                            <option value="">--:--</option>
+                            <?php 
+                            // ตรวจสอบค่า reserve_time2 ถ้ามีค่าแล้วให้เลือกค่านั้น
+                            for ($hour = 10; $hour <= 20; $hour++) {
+                                for ($minute = 0; $minute < 60; $minute += 30) {
+                                    $time = sprintf('%02d:%02d', $hour, $minute);
+                                    // ตรวจสอบว่าค่านี้ตรงกับค่าที่ถูกเก็บไว้หรือไม่
+                                    $selected = ($time == $reserve_time2) ? "selected" : "";
+                                    echo "<option value='$time' $selected>$time</option>";
+                                }
+                            }
+                            ?>
+                        </select>
                         <div class="invalid-feedback">
                             **กรุณากรอกข้อมูล
                         </div>
                     </div>
+
                 </div>
             </form>
-
+            
             <!-- ไม่มีปุ่มค้นหาอีกต่อไป เนื่องจากการ submit อัตโนมัติ -->
 
             <!-- Room selection -->
@@ -136,25 +218,27 @@ $result = mysqli_query($conn, $sql);
                     <h4>เลือกห้องซ้อม :</h4>
                     <div class="row">
                         <?php
-                        // ค้นหาห้องทั้งหมด
+                        // Display room data
                         $sql = "SELECT * FROM room_tb";
                         $result = $conn->query($sql);
 
                         if ($result->num_rows > 0) {
                             while ($room = $result->fetch_assoc()) {
-                                // ตรวจสอบสถานะห้องจากตารางการจอง
+                                // Detect room reservation status
                                 $room_type = $room['room_type'];
+                                $room_price = $room['room_price'];
                                 $status_sql = "SELECT COUNT(*) AS reserved_count FROM reserve_tb 
-                                               WHERE reserve_type = '$room_type' 
-                                               AND reserve_date = '$reserve_date' 
-                                               AND (reserve_time1 <= '$reserve_time2' AND reserve_time2 >= '$reserve_time1')";
+                                            WHERE reserve_type = '$room_type' 
+                                            AND reserve_date = '$reserve_date' 
+                                            AND (reserve_time1 <= '$reserve_time2' AND reserve_time2 >= '$reserve_time1')";
                                 $status_result = $conn->query($status_sql);
                                 $status_row = $status_result->fetch_assoc();
                                 $is_reserved = $status_row['reserved_count'] > 0;
 
-                                // แสดงข้อมูลห้องซ้อม
+                                // Display room card
                                 echo '<div class="col-md-4">';
-                                echo '<div class="card" id="card-' . $room['room_type'] . '" onclick="openReserveModal(\'' . $room['room_type'] . '\')">';
+                                $cardClass = $is_reserved ? 'card-disabled' : 'card';
+                                echo '<div class="' . $cardClass . '" id="card-' . $room['room_type'] . '" onclick="openReserveModal(\'' . $room['room_type'] . '\', ' . $room_price . ', ' . ($is_reserved ? 'true' : 'false') . ')">';
                                 echo '<img src="uploads/' . $room['room_img'] . '" class="card-img-top" alt="Room Image">';
                                 echo '<div class="card-body">';
                                 echo '<h5 class="card-type">' . $room['room_type'] . ' (ความจุ ' . $room['room_capacity'] . ' คน)</h5>';
@@ -173,6 +257,7 @@ $result = mysqli_query($conn, $sql);
                         } else {
                             echo "ไม่พบข้อมูลห้อง";
                         }
+
                         ?>
                     </div>
                 </div>
@@ -185,7 +270,6 @@ $result = mysqli_query($conn, $sql);
                                 <input type="hidden" name="reserve_date" value="<?php echo htmlspecialchars($reserve_date); ?>">
                                 <input type="hidden" name="reserve_time1" value="<?php echo htmlspecialchars($reserve_time1); ?>">
                                 <input type="hidden" name="reserve_time2" value="<?php echo htmlspecialchars($reserve_time2); ?>">
-                               
 
                                 <div class="modal-header">
                                     <h4 class="modal-title" id="reserveModalLabel"><i class="nav-icon fas fa-plus-square"></i> เพิ่มข้อมูลลูกค้า</h4>
@@ -193,25 +277,29 @@ $result = mysqli_query($conn, $sql);
                                 </div>
 
                                 <div class="modal-body">
-                                    <div class="mb-3">
-                                        <label for="reserve_name" class="form-label">ชื่อลูกค้า: </label>
-                                        <input type="text" class="form-control" name="reserve_name" id="reserve_name" required>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="reserve_name" class="form-label">ชื่อลูกค้า : </label>
+                                            <input type="text" class="form-control" name="reserve_name" id="reserve_name" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="reserve_telphone" class="form-label">เบอร์โทร : </label>
+                                            <input type="text" class="form-control" name="reserve_telphone" id="reserve_telphone" required>
+                                        </div>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="reserve_telphone" class="form-label">เบอร์โทร: </label>
-                                        <input type="text" class="form-control" name="reserve_telphone" id="reserve_telphone" required>
+                                        <label for="reserve_address" class="form-label">ที่อยู่ : </label>
+                                        <textarea class="form-control" name="reserve_address" id="reserve_address" rows="3" required></textarea>
                                     </div>
-                                    <div class="mb-3">
-                                        <label for="reserve_address" class="form-label">ที่อยู่: </label>
-                                        <textarea class="form-control" name="reserve_address" id="reserve_address" rows="2" required></textarea>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="reserve_type" class="form-label">ประเภท: </label>
-                                        <input  class="form-control" type="text" id="modal_reserve_type" name="reserve_type" value="">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="reserve_price" class="form-label">ราคาห้อง: </label>
-                                        <input type="number" class="form-control" name="reserve_price" id="reserve_price" required>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="reserve_type" class="form-label">ประเภท : </label>
+                                            <input class="form-control" type="text" id="modal_reserve_type" name="reserve_type" value="" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="reserve_price" class="form-label">ราคาห้อง : </label>
+                                            <input type="number" class="form-control" name="reserve_price" id="reserve_price" required>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -223,34 +311,63 @@ $result = mysqli_query($conn, $sql);
                     </div>
                 </div>
 
+
+                <!-- ดึงประเภทมาในmodal -->
                 <script>
-                    function openReserveModal(roomType) {
-                        document.getElementById('modal_reserve_type').value = roomType;
-                        var modal = new bootstrap.Modal(document.getElementById('reserveModal'));
-                        modal.show();
+                function openReserveModal(roomType, roomPrice, isReserved) {
+                    if (isReserved) {
+                        alert('ห้องนี้ไม่สามารถจองได้');
+                        return;
+                    }
+                    document.getElementById('modal_reserve_type').value = roomType;
+                    document.getElementById('reserve_price').value = roomPrice; // Set default price per hour
+                    var modal = new bootstrap.Modal(document.getElementById('reserveModal'));
+                    modal.show();
+                }
+                document.getElementById('reserve_time2').addEventListener('change', function() {
+                    var time1 = document.getElementById('reserve_time1').value;
+                    var time2 = document.getElementById('reserve_time2').value;
+                    var roomPricePerHour = parseFloat(document.getElementById('reserve_price').value);
+
+                    if (time1 && time2 && !isNaN(roomPricePerHour)) {
+                        var start = new Date("1970-01-01T" + time1 + ":00");
+                        var end = new Date("1970-01-01T" + time2 + ":00");
+                        var diff = (end - start) / (1000 * 60 * 60); // Difference in hours
+
+                        if (diff > 0) {
+                            var totalPrice = diff * roomPricePerHour;
+                            document.getElementById('reserve_price').value = totalPrice.toFixed(2); // Show price with 2 decimal points
+                        } else {
+                            alert('เวลาเริ่มต้นต้องน้อยกว่าเวลาสิ้นสุด');
+                            document.getElementById('reserve_price').value = 0; // Reset price
+                        }
+                    }
+                });
+                </script>
+
+
+
+                <script>
+                    // เปลี่ยนปีเป็นพ.ศ.ด้วยจาวาสคริป 
+                    function convertToBuddhistYear() {
+                        var dateInput = document.getElementById("reserve_date");
+                        var dateValue = new Date(dateInput.value);
+
+                        if (!isNaN(dateValue.getTime())) {
+                            var buddhistYear = dateValue.getFullYear() + 543;
+                            var formattedDate = dateValue.toISOString().split('T')[0];
+                            var parts = formattedDate.split("-");
+                            parts[0] = buddhistYear;
+                            dateInput.value = parts.join("-");
+                        }
+                        dateInput.form.submit();
                     }
                 </script>
             </div>
         </div>
     </div>
 </section>
-<script>
-function convertToBuddhistYear() {
-    var dateInput = document.getElementById("reserve_date");
-    var dateValue = new Date(dateInput.value);
-    
-    if (!isNaN(dateValue.getTime())) {
-        // เพิ่ม 543 ปีเพื่อเปลี่ยนเป็นปี พ.ศ.
-        var buddhistYear = dateValue.getFullYear() + 543;
-        // กำหนดปีที่แปลงแล้วกลับเข้าไปใน input
-        var formattedDate = dateValue.toISOString().split('T')[0];
-        var parts = formattedDate.split("-");
-        parts[0] = buddhistYear; // แทนที่ปี ค.ศ. ด้วยปี พ.ศ.
-        dateInput.value = parts.join("-");
-    }
-    dateInput.form.submit();
-}
-</script>
+
 <!-- /.content -->
 <?php include('footer.php'); ?>
 

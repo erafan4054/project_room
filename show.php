@@ -57,56 +57,51 @@ $result = $conn->query($sql);
               </tr>
             </thead>
             <tbody>
-              <?php
+            <?php
               if ($result) {
-                  if ($result->num_rows > 0) {
-                      $number = 0;
-                      while ($row = $result->fetch_assoc()) {
-                          $number++;
-                          echo "<tr>";
-                          echo "<td>" . $number . "</td>";
-
-                          // แปลงวันที่จากฐานข้อมูลเป็นรูปแบบ DD-MM-YYYY และปี พ.ศ.
-                          $reserve_date = $row["reserve_date"];
-                          $date = new DateTime($reserve_date);
-                          $thai_year = $date->format('Y') + 543; // เพิ่ม 543 ปีเพื่อแปลงเป็น พ.ศ.
-                          $formatted_date = $date->format('d-m') . '-' . $thai_year;
-
-                          echo "<td>" . $formatted_date . "</td>";
-
-                          echo "<td>" . $row["reserve_time1"] . "</td>";
-                          echo "<td>" . $row["reserve_time2"] . "</td>";
-                          echo "<td>" . $row["reserve_type"] . "</td>";
-                          echo "<td>" . $row["reserve_price"] . "</td>";          
-                          echo "<td>" . $row["reserve_name"] . "</td>";
-                          echo "<td>" . $row["reserve_address"] . "</td>";
-                          echo "<td>" . $row["reserve_telphone"] . "</td>";
-                          echo '<td>
-                                  <a class="btn btn-warning btn-xs" href="jong.edit.php?reserve_id=' . $row["reserve_id"] . '">
-                                    <i class="fas fa-pencil-alt"></i>
-                                  </a>
-                                  <a class="btn btn-danger btn-xs" href="jong.delete.php?delete_id=' . $row["reserve_id"] . '">
-                                    <i class="fas fa-trash-alt"></i>
-                                  </a>
-                                  <a class="btn btn-info btn-xs" href="receipt.php?id=' . $row["reserve_id"] . '" target="_blank">
-                                    <i class="fas fa-print"></i>
-                                  </a>
-                                </td>';
-                          echo "</tr>";
-                      }
-                  } else {
-                      echo "<tr><td colspan='10'>ไม่มีข้อมูลที่สามารถใช้ได้</td></tr>";
-                  }
-              } else {
-                  echo "Error: " . $sql . "<br>" . $conn->error;
-              }
+                if ($result->num_rows > 0) {
+                    $number = 0;
+                    while ($row = $result->fetch_assoc()) {
+                        $number++;
+                        // โดยถือว่า reserve_date อยู่ในรูปแบบ 'YYYY-MM-DD'
+                        $date = new DateTime($row["reserve_date"]);
+                        $formattedDate = $date->format('d-m-Y'); // รูปแบบวันที่เป็น '05-09-2567'
+                        
+                        echo "<tr>";
+                        echo "<td>" . $number . "</td>";
+                        echo "<td>" . $formattedDate . "</td>";
+                        echo "<td>" . $row["reserve_time1"] . "</td>";
+                        echo "<td>" . $row["reserve_time2"] . "</td>";
+                        echo "<td>" . $row["reserve_type"] . "</td>";
+                        echo "<td>" . $row["reserve_price"] . "</td>";          
+                        echo "<td>" . $row["reserve_name"] . "</td>";
+                        echo "<td>" . $row["reserve_address"] . "</td>";
+                        echo "<td>" . $row["reserve_telphone"] . "</td>";
+                        echo '<td>
+                                <a class="btn btn-warning btn-xs" href="jong.edit.php?reserve_id=' . $row["reserve_id"] . '">
+                                  <i class="fas fa-pencil-alt"></i>
+                                </a>
+                                <a class="btn btn-danger btn-xs" href="jong.delete.php?delete_id=' . $row["reserve_id"] . '">
+                                  <i class="fas fa-trash-alt"></i>
+                                </a>
+                                <a class="btn btn-info btn-xs" href="receipt.php?id=' . $row["reserve_id"] . '" target="_blank">
+                                  <i class="fas fa-print"></i>
+                                </a>
+                              </td>';
+                        echo "</tr>";
+                    }
+                } else {
+                        echo "<tr><td colspan='10'>ไม่มีข้อมูลที่สามารถใช้ได้</td></tr>";
+                    }
+                } else {
+                    echo "Error: " . $sql . "<br>" . $conn->error;
+                }
               $conn->close();
-              ?>
+            ?>
 
             </tbody>
           </table>
         </div>
-        <div class="col-md-1"></div>
       </div>
     </div>
   </div>

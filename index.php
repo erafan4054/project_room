@@ -24,13 +24,22 @@ if ($conn->connect_error) {
 $sql = "SELECT reserve_id, reserve_date, reserve_time1, reserve_time2, reserve_type, reserve_price, reserve_name, reserve_address, reserve_telphone FROM reserve_tb";
 $result = $conn->query($sql);
 
+// นับจำนวนการจองทั้งหมด
+$sql_count = "SELECT COUNT(*) as total_reserve FROM reserve_tb";
+$count_result = $conn->query($sql_count);
+$total_reserve = $count_result->fetch_assoc()['total_reserve'];
+
+// คำนวณรายได้รวม
+$sql_income = "SELECT SUM(reserve_price) as total_income FROM reserve_tb";
+$income_result = $conn->query($sql_income);
+$total_income = $income_result->fetch_assoc()['total_income'];
 ?>
 <!-- Content Header (Page header) -->
 <section class="content-header">
   <div class="container-fluid">
     <div class="row">
       <div class="col-md-6">
-      <h1><i class="nav-icon fas fa-file-alt"></i> หน้าหลัก</h1>
+      <h1><i class="nav-icon fas fa-home"></i> หน้าหลัก</h1>
     </div>
       <div class="col-md-6 text-right">
         <a href="jong.php?action=add" class="btn btn-danger"> <!-- สีเขียวbtn-success สีแดงbtn-danger ฟ้าbtn-primary เทาbtn-secondary-->
@@ -40,8 +49,38 @@ $result = $conn->query($sql);
     </div>
   </div><!-- /.container-fluid -->
 </section>
+
 <!-- Main content -->
 <section class="content">
+  <!-- Card สำหรับแสดงจำนวนการจองทั้งหมดและรายได้ทั้งหมด -->
+  <div class="row">
+    <!-- การ์ดสำหรับจำนวนการจองทั้งหมด -->
+    <div class="col-lg-3 col-6">
+      <div class="small-box bg-info">
+        <div class="inner">
+          <h3><?php echo $total_reserve; ?></h3>
+          <p>จำนวนการจองทั้งหมด</p>
+        </div>
+        <div class="icon">
+          <i class="fas fa-calendar-alt"></i>
+        </div>
+      </div>
+    </div>
+    
+    <!-- การ์ดสำหรับรายได้ทั้งหมด -->
+    <div class="col-lg-3 col-6">
+      <div class="small-box bg-success">
+        <div class="inner">
+          <h3><?php echo number_format($total_income, 2); ?> ฿</h3>
+          <p>รายได้รวมทั้งหมด</p>
+        </div>
+        <div class="icon">
+          <i class="fas fa-money-bill-wave"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="card">
     <div class="card-header card-navy card-outline"><br>
     <div class="card-body p-1">

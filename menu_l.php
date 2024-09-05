@@ -12,7 +12,7 @@
 
     <!-- Sidebar -->
     <div class="sidebar">
-      <!-- Sidebar user (optional) -->
+      <!-- ผู้ใช้แถบด้านข้าง (ตัวเลือก) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="image">
           <img src="uploads/Admin.png" class="img-circle elevation-2" alt="User Image">
@@ -22,12 +22,11 @@
         </div>
       </div>
 
-      <!-- Sidebar Menu -->
+      <!--เมนูแถบด้านข้าง -->
       <nav class="mt-2">
         <!-- nav-compact -->
         <ul class="nav nav-pills nav-sidebar nav-child-indent flex-column" data-widget="treeview" role="menu" data-accordion="false">
-          <!-- Add icons to the links using the .nav-icon class
-               with font-awesome or any other icon font library -->
+          <!-- เพิ่มไอคอนลงในลิงก์โดยใช้คลาส .nav-icon ด้วย font-awesome หรือไลบรารีฟอนต์ไอคอนอื่น ๆ -->
           <li class="nav-header"></li>
 
           <li class="nav-item">
@@ -83,12 +82,17 @@
 
           <div class="user-panel mt-2 pb-3 mb-2 d-flex"></div>
           <li class="nav-item">
-            <a href="logout.php" class="nav-link text-danger">
+          <a href="logout.php" class="nav-link text-danger" onclick="return confirmLogout();">
               <i class="nav-icon fas fa-sign-out-alt"></i>
               <p>ออกจากระบบ</p>
-            </a>
+          </a>
           </li>
-        </ul>
+          </ul>
+          <script>
+          function confirmLogout() {
+              return confirm("แน่ใจหรือว่าต้องการออกจากระบบ?");
+          }
+          </script>
       </nav>
       <!-- /.sidebar-menu -->
       <!-- http://fordev22.com/ -->
