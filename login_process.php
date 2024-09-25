@@ -11,8 +11,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         exit;
     }
 
-    // เตรียมคำสั่งเลือก
-    $sql = "SELECT user_id, username, password, user_type FROM users WHERE username = ? AND password = ?";
+    // เตรียมคำสั่งเลือก และเพิ่ม user_name ด้วย
+    $sql = "SELECT user_id, username, password, user_type, user_name FROM users WHERE username = ? AND password = ?";
     if ($stmt = $conn->prepare($sql)) {
         $stmt->bind_param("ss", $username, $password);
 
@@ -20,12 +20,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $stmt->store_result();
 
             if ($stmt->num_rows == 1) {
-                $stmt->bind_result($user_id, $username, $password, $user_type);
+                // เพิ่ม user_name ในการ bind_result
+                $stmt->bind_result($user_id, $username, $password, $user_type, $user_name);
                 if ($stmt->fetch()) {
                     $_SESSION['loggedin'] = true;
                     $_SESSION['user_id'] = $user_id;
                     $_SESSION['username'] = $username;
                     $_SESSION['user_type'] = $user_type;
+                    $_SESSION['user_name'] = $user_name;  // บันทึก user_name ลงใน session
 
                     // ตรวจสอบ user_type และเปลี่ยนเส้นทางตามประเภท
                     if ($user_type == 'admin') {

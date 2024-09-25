@@ -128,14 +128,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
 
                 <div class="form-row">
+                    <div class="col-md-12 mb-3">
+                        <label for="reserve_address">ที่อยู่:</label>
+                        <textarea class="form-control" name="reserve_address" rows="3" required><?php echo htmlspecialchars($row['reserve_address']); ?></textarea>
+                        <div class="invalid-feedback">
+                            **กรุณากรอกข้อมูล
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
                     <div class="col-md-6 mb-3">
                         <label for="reserve_type">ประเภท:</label>
-                        <select name="reserve_type" class="form-control" id="reserve_type" value="<?php echo htmlspecialchars($row['reserve_type']); ?>" required> required>
-                                <option value="">เลือกห้อง</option>
-                                <option value="ห้องล่าง" <?php echo (isset($row['reserve_type']) && $row['reserve_type'] == 'ห้องล่าง') ? 'selected' : ''; ?>>ห้องล่าง</option>
-                                <option value="ห้องกลาง" <?php echo (isset($row['reserve_type']) && $row['reserve_type'] == 'ห้องกลาง') ? 'selected' : ''; ?>>ห้องกลาง</option>
-                                <option value="ห้องใหญ่" <?php echo (isset($row['reserve_type']) && $row['reserve_type'] == 'ห้องใหญ่') ? 'selected' : ''; ?>>ห้องใหญ่</option>
-                            </select>
+                        <input type="text" class="form-control" name="reserve_type" value="<?php echo htmlspecialchars($row['reserve_type']); ?>" required>
                         <div class="invalid-feedback">
                             **กรุณากรอกข้อมูล
                         </div>

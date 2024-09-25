@@ -18,9 +18,24 @@
           <img src="uploads/Admin.png" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="" target="_blank" class="d-block">เจ้าของร้าน (User)</a>
-        </div>
-      </div>
+          <a href="" target="_blank" class="d-block">
+            <?php
+            // ตรวจสอบว่าผู้ใช้ล็อกอินแล้วหรือไม่
+              if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
+                  $user_name = $_SESSION['user_name'];
+                  $user_type = $_SESSION['user_type'];  // ดึง user_type จาก session
+              } else {
+                  $user_name = 'Guest';
+                  $user_type = '';  // ถ้ายังไม่ได้ล็อกอิน ไม่แสดง user_type
+              }
+            ?>
+
+            <a href="" target="_blank" class="d-block">
+                <?php echo htmlspecialchars($user_name) . ' (' . htmlspecialchars($user_type) . ')'; ?> <!-- แสดงชื่อผู้ใช้พร้อมประเภทผู้ใช้ -->
+            </a>
+         </a>
+       </div>
+    </div>
 
       <!--เมนูแถบด้านข้าง -->
       <nav class="mt-2">
@@ -61,13 +76,13 @@
               <li class="nav-item">
                 <a href="jong.php" class="nav-link <?php if($submenu=="booking"){echo "active";} ?>">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>เมนูจอง</p>
+                  <p>รายการจอง</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="show.php" class="nav-link <?php if($submenu=="display"){echo "active";} ?>">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>เมนูแสดง</p>
+                  <p>รายการบันทึก</p>
                 </a>
               </li>
             </ul>

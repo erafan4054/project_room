@@ -37,7 +37,7 @@ if (!$data) {
 <!DOCTYPE html>
 <html>
 <head>
-    <title>ใบเสร็จ</title>
+    <title>ใบเสร็จรับเงิน</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -50,44 +50,66 @@ if (!$data) {
             background-color: #f9f9f9;
         }
         .receipt {
-            width: 600px;
-            padding: 20px;
+            width: 800px; /* 3 ส่วนของความกว้าง */
+            height: 600px; /* 2 ส่วนของความสูง */
+            padding: 60px; /* เพิ่ม padding ให้มากขึ้น */
             background-color: white;
             border: 1px solid #ddd;
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box; /* รวม padding ในการคำนวณขนาด */
         }
         .receipt h1 {
             text-align: center;
-            font-size: 24px;
+            font-size: 28px;
+            font-weight: bold;
             margin-bottom: 20px;
         }
-        .receipt .company-info {
-            text-align: left; /* ตั้งค่าชิดซ้าย */
-            margin-bottom: 20px;
+        .receipt .company-info, .receipt .customer-info, .receipt .summary {
+            padding: 0 10px; /* เพิ่ม padding ซ้ายและขวา */
+            margin-bottom: 15px;
         }
-        .receipt .company-info p {
+        .receipt .company-info p, .receipt .customer-info p {
             margin: 0;
-            line-height: 1.6;
+            line-height: 1.2;
         }
         .receipt .details-table {
-            width: 100%;
+            width: 100%; /* ทำให้ตารางเต็มความกว้างของกรอบ */
+            max-width: 850px; /* จำกัดขนาดตารางสูงสุด */
             border-collapse: collapse;
             margin-bottom: 20px;
+            margin-left: 10px; /* ขยับตารางเข้ามาทางซ้าย */
+            margin-right: 10px; /* ขยับตารางเข้ามาจากขอบขวามากขึ้น */
         }
+
         .receipt .details-table th, .receipt .details-table td {
-            padding: 10px;
+            padding: 10px; /* เพิ่มพื้นที่ในแต่ละเซลล์ของตาราง */
             border: 1px solid #ddd;
             text-align: left;
         }
         .receipt .details-table th {
             background-color: #f2f2f2;
-        }
-        .receipt .total-price {
-            text-align: right;
-            font-size: 20px;
+            text-align: center;
+            padding: 10px; /* เพิ่ม padding ให้หัวตาราง */
             font-weight: bold;
+            margin-right: 20px; /* ให้ตรงกับการจัดวางของข้อมูลด้านบน */
         }
+        .receipt .details-table td {
+            text-align: left;
+        }
+        .receipt .summary {
+            font-size: 15px;
+            margin-bottom: 10px; /* ลดระยะห่างระหว่างตารางและหมายเหตุ */
+        }
+
+        .receipt .total-price {
+            text-align: right; /* ทำให้ข้อความชิดขวา */
+            font-size: 20px; /* ปรับขนาดตัวอักษร */
+            font-weight: bold; /* ทำให้ตัวอักษรหนา */
+            margin-right: 0px; /* ขยับข้อความเข้ามาทางซ้าย เพื่อไม่ให้ชิดขอบเกินไป */
+            margin-top: 20px; /* เพิ่มระยะห่างจากตาราง */
+        }
+
         .print-button {
             display: block;
             width: 100px;
@@ -96,42 +118,62 @@ if (!$data) {
             background-color: #4CAF50;
             color: white;
             text-align: center;
-            border-radius: 5px;
+            border-radius: 10px;
             cursor: pointer;
+        }
+        .receipt .customer-info {
+            flex-direction: column;
+        }
+        .receipt .customer-info div {
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
     <div class="receipt">
-        <h1>ใบเสร็จ</h1>
+        <h1>ใบเสร็จรับเงิน</h1>
         <div class="company-info">
-            <p><strong>Chromosome 21 Yala</strong></p>
-            <p>301 ซอย - ถนนผังเมือง 4 ตำบลสะเตง อำเภอเมืองยะลา จังหวัดยะลา</p>
-            <p>Tel: 02-354-2345</p>
+            <div>
+                <p><strong>Chromosome 21</strong></p>
+                <p>ห้องซ้อมดนตรีโครโมโซม 21 ยินดีต้อนรับ!!<br>
+                301 ซอย - ถนนผังเมือง4 ตำบลสะเตง อำเภอเมืองยะลา จังหวัดยะลา<br>
+                Tel: 02-354-2345</p>
+            </div>
         </div>
-        <p><strong>วันที่ทำรายการจอง : <?php echo htmlspecialchars($data['reserve_date']); ?></strong></p>
+        <div class="customer-info">
+            <div>
+                <p><strong>ลูกค้า</strong><br>
+                ชื่อผู้จอง: <?php echo htmlspecialchars($data['reserve_name']); ?><br>
+                เบอร์: <?php echo htmlspecialchars($data['reserve_telphone']); ?></p>
+            </div>
+            <div>
+                <p><strong>วันที่: <?php echo htmlspecialchars($data['reserve_date']); ?></strong></p>
+            </div>
+        </div>
         <table class="details-table">
             <tr>
-                <th>ชื่อลูกค้า :</th>
-                <td><?php echo htmlspecialchars($data['reserve_name']); ?></td>
-                <th>เบอร์โทรศัพท์ :</th>
-                <td><?php echo htmlspecialchars($data['reserve_telphone']); ?></td>
+                <th>#</th>
+                <th>เวลา (เริ่ม)</th>
+                <th>เวลา (ถึง)</th>
+                <th>ประเภทห้อง</th>
+                <th>ราคาห้อง /ชม.</th>
+                <th>ชั่วโมง</th>
             </tr>
             <tr>
-                <th>ที่อยู่ลูกค้า :</th>
-                <td><?php echo htmlspecialchars($data['reserve_address']); ?></td>
-                <th>ประเภทห้อง :</th>
-                <td><?php echo htmlspecialchars($data['reserve_type']); ?></td>
-            </tr>
-            <tr>
-                <th>เวลาจอง/เริ่ม :</th>
+                <td>1</td>
                 <td><?php echo htmlspecialchars($data['reserve_time1']); ?></td>
-                <th>เวลาจอง/ถึง :</th>
                 <td><?php echo htmlspecialchars($data['reserve_time2']); ?></td>
+                <td><?php echo htmlspecialchars($data['reserve_type']); ?></td>
+                <td><?php echo htmlspecialchars($data['reserve_price']); ?></td>
+                <td><?php echo htmlspecialchars($data['reserve_hour']); ?></td>
             </tr>
         </table>
+        <div class="summary">
+            <p><strong>หมายเหตุ</strong><br>
+            ผู้รับ อักรอม สียะ</p>
+        </div>
         <div class="total-price">
-            ราคา = <?php echo htmlspecialchars($data['reserve_price']); ?> บาท
+            ราคารวม = <?php echo htmlspecialchars($data['reserve_total']); ?> บาท
         </div>
         <div class="print-button" onclick="window.print()">Print</div>
     </div>

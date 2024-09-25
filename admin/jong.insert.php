@@ -24,15 +24,15 @@ $reserve_time1 = isset($_POST['reserve_time1']) ? $_POST['reserve_time1'] : '';
 $reserve_time2 = isset($_POST['reserve_time2']) ? $_POST['reserve_time2'] : '';
 $reserve_name = isset($_POST['reserve_name']) ? $_POST['reserve_name'] : '';
 $reserve_telphone = isset($_POST['reserve_telphone']) ? $_POST['reserve_telphone'] : '';
+$reserve_address = isset($_POST['reserve_address']) ? $_POST['reserve_address'] : '';
 $reserve_type = isset($_POST['reserve_type']) ? $_POST['reserve_type'] : '';
 $reserve_price = isset($_POST['reserve_price']) ? $_POST['reserve_price'] : '';
 $reserve_total = isset($_POST['reserve_total']) ? $_POST['reserve_total'] : '';
 $reserve_hour = isset($_POST['reserve_hour']) ? $_POST['reserve_hour'] : ''; 
 
 // สร้างคำสั่ง SQL สำหรับการแทรกข้อมูล
-$sql = "INSERT INTO reserve_tb (reserve_date, reserve_time1, reserve_time2, reserve_name, reserve_telphone, reserve_type, reserve_price, reserve_total, reserve_hour) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
+$sql = "INSERT INTO reserve_tb (reserve_date, reserve_time1, reserve_time2, reserve_name, reserve_telphone, reserve_address, reserve_type, reserve_price, reserve_total, reserve_hour) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 // เตรียมคำสั่ง SQL
 $stmt = $conn->prepare($sql);
@@ -41,7 +41,7 @@ if (!$stmt) {
 }
 
 // ผูกค่าตัวแปรกับคำสั่ง SQL
-$stmt->bind_param("sssssssss", $reserve_date, $reserve_time1, $reserve_time2, $reserve_name, $reserve_telphone, $reserve_type, $reserve_price, $reserve_total, $reserve_hour);
+$stmt->bind_param("ssssssssss", $reserve_date, $reserve_time1, $reserve_time2, $reserve_name, $reserve_telphone, $reserve_address, $reserve_type, $reserve_price, $reserve_total, $reserve_hour);
 
 // รันคำสั่ง SQL
 if ($stmt->execute()) {
@@ -53,6 +53,17 @@ if ($stmt->execute()) {
     echo "เกิดข้อผิดพลาด: " . $stmt->error;
 }
 
+// if ($stmt->execute()) {
+//     // รับค่า reserve_id ที่ถูกแทรก
+//     $inserted_reserve_id = $stmt->insert_id; // รับค่าไอดีล่าสุด
+
+//     echo "<script>
+//             alert('บันทึกใหม่สำเร็จแล้ว');
+//             window.location.href = 'jong.check.php?reserve_id=" . $inserted_reserve_id . "';
+//           </script>";
+// } else {
+//     echo "เกิดข้อผิดพลาด: " . $stmt->error;
+// }
 
 // ปิดการเชื่อมต่อฐานข้อมูล
 $stmt->close();
