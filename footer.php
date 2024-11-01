@@ -4,7 +4,7 @@
 
   <footer class="main-footer">
     <div class="float-right d-none d-sm-block">
-      <b> เจ้าของร้าน (User)<!-- /.admin --></b><!-- /.1 -->
+      <b> เจ้าของร้าน (Admin)<!-- /.admin --></b><!-- /.1 -->
     </div>
     <strong><!-- /.ชื่อ -->Chromosome 21 </strong> .ยะลา<!-- /.ยะลา -->
   </footer>

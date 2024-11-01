@@ -20,7 +20,7 @@ if (isset($_GET['delete_id'])) {
     $sql->bind_param("i", $delete_id);
     
     if ($sql->execute()) {
-        echo "<script>alert('ลบข้อมูลเรียบร้อยแล้ว');</script>";
+        echo "<script>alert('ยกเลิกการจองเรียบร้อยแล้ว');</script>";
         echo "<script>window.location.href='show.php';</script>";
     } else {
         echo "Error deleting record: " . $conn->error;

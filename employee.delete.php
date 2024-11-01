@@ -16,11 +16,11 @@ if ($conn->connect_error) {
 // ลบข้อมูลพนักงาน
 if (isset($_GET['delete'])) {
     $user_id = $_GET['delete'];
-    $sql = "DELETE FROM users WHERE user_id='$user_id'";
+    $sql = "DELETE FROM user_tb WHERE user_id='$user_id'";
 
     if ($conn->query($sql) === TRUE) {
         echo "<script>
-                alert('ลบเรียบร้อยแล้ว');
+                alert('ลบออกเรียบร้อยแล้ว');
                 window.location.href = 'employee.php';
               </script>";
     } else {

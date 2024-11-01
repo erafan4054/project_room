@@ -19,9 +19,9 @@ if (isset($_GET['delete'])) {
 
     if ($conn->query($sql) === TRUE) {
         echo "<script>
-            alert('ลบเรียบร้อยแล้ว');
-            window.location.href = window.location.href.split('?')[0];
-        </script>";
+                alert('ลบออกเรียบร้อยแล้ว');
+                window.location.href = 'room.php';
+              </script>";
     } else {
         echo "Error: " . $sql . "<br>" . $conn->error;
     }

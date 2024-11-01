@@ -4,7 +4,7 @@
 
   <footer class="main-footer">
     <div class="float-right d-none d-sm-block">
-      <b> Admin <!-- /.admin --></b><!-- /.1 -->
+      <b> พนักงาน (Employee) <!-- /.admin --></b><!-- /.1 -->
     </div>
     <strong><!-- /.ชื่อ -->Chromosome 21 </strong> .ยะลา<!-- /.ยะลา -->
   </footer>

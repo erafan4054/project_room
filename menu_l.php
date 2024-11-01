@@ -3,7 +3,7 @@
 <aside class="main-sidebar sidebar-light-navy elevation-4">
     <!-- Brand Logo -->
     <a href="" class="brand-link bg-red">
-      <img src="assets/dist/img/logo.png"
+      <img src="uploads/logo.png"
            alt="AdminLTE Logo"
            class="brand-image img-circle elevation-3"
            style="opacity: .8; width: 30px; height: 30px;">
@@ -18,24 +18,22 @@
           <img src="uploads/Admin.png" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="" target="_blank" class="d-block">
-            <?php
-            // ตรวจสอบว่าผู้ใช้ล็อกอินแล้วหรือไม่
-              if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
-                  $user_name = $_SESSION['user_name'];
-                  $user_type = $_SESSION['user_type'];  // ดึง user_type จาก session
-              } else {
-                  $user_name = 'Guest';
-                  $user_type = '';  // ถ้ายังไม่ได้ล็อกอิน ไม่แสดง user_type
-              }
-            ?>
+          <?php
+          // ตรวจสอบว่าผู้ใช้ล็อกอินแล้วหรือไม่
+            if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
+                $user_name = $_SESSION['user_name'];
+                $user_type = $_SESSION['user_type_name'];  // ดึง user_type จาก session
+            } else {
+                $user_name = 'Guest';
+                $user_type = '';  // ถ้ายังไม่ได้ล็อกอิน ไม่แสดง user_type
+            }
+          ?>
 
-            <a href="" target="_blank" class="d-block">
-                <?php echo htmlspecialchars($user_name) . ' (' . htmlspecialchars($user_type) . ')'; ?> <!-- แสดงชื่อผู้ใช้พร้อมประเภทผู้ใช้ -->
-            </a>
-         </a>
-       </div>
-    </div>
+          <span class="d-block">
+              <?php echo htmlspecialchars($user_name) . ' (' . htmlspecialchars($user_type) . ')'; ?> <!-- แสดงชื่อผู้ใช้พร้อมประเภทผู้ใช้ -->
+          </span>     
+        </div>
+      </div>
 
       <!--เมนูแถบด้านข้าง -->
       <nav class="mt-2">

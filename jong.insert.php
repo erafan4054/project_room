@@ -32,27 +32,27 @@ $reserve_hour = isset($_POST['reserve_hour']) ? $_POST['reserve_hour'] : '';
 // สร้างคำสั่ง SQL สำหรับการแทรกข้อมูล
 $sql = "INSERT INTO reserve_tb (reserve_date, reserve_time1, reserve_time2, reserve_name, reserve_telphone, reserve_type, reserve_price, reserve_total, reserve_hour) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
+// สร้างคำสั่ง SQL แบบ prepared statement เพื่อเพิ่มข้อมูลลงในตาราง reserve_tb
 
 // เตรียมคำสั่ง SQL
 $stmt = $conn->prepare($sql);
 if (!$stmt) {
-    die("Prepare failed: " . $conn->error);
+    die("Prepare failed: " . $conn->error); 
 }
 
 // ผูกค่าตัวแปรกับคำสั่ง SQL
 $stmt->bind_param("sssssssss", $reserve_date, $reserve_time1, $reserve_time2, $reserve_name, $reserve_telphone, $reserve_type, $reserve_price, $reserve_total, $reserve_hour);
+// กำหนดชนิดของข้อมูลที่ผูกกับ SQL ('s' หมายถึง string ทั้งหมด) และผูกค่าจากตัวแปรที่ได้รับจากฟอร์ม
 
 // รันคำสั่ง SQL
 if ($stmt->execute()) {
     echo "<script>
-                    alert('บันทึกใหม่สำเร็จแล้ว');
-                    window.location.href = 'show.php';
+                    alert('บันทึกใหม่สำเร็จแล้ว'); // แสดงข้อความแจ้งเตือนว่าการบันทึกสำเร็จ
+                    window.location.href = 'show.php'; // เปลี่ยนเส้นทางไปยังหน้า show.php
                   </script>";
 } else {
     echo "เกิดข้อผิดพลาด: " . $stmt->error;
 }
-
 
 // ปิดการเชื่อมต่อฐานข้อมูล
 $stmt->close();

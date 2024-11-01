@@ -3,7 +3,7 @@
 <aside class="main-sidebar sidebar-light-navy elevation-4">
     <!-- Brand Logo -->
     <a href="" class="brand-link bg-red">
-      <img src="../assets/dist/img/logo.png"
+      <img src="../uploads/logo.png"
            alt="AdminLTE Logo"
            class="brand-image img-circle elevation-3"
            style="opacity: .8; width: 30px; height: 30px;">
@@ -14,24 +14,24 @@
     <div class="sidebar">
       <!-- Sidebar user (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-        <div class="image">
-          <img src="../assets/dist/img/avatar2.png" class="img-circle elevation-2" alt="User Image">
-        </div>
-        <div class="info">
-          <?php
-          // ตรวจสอบว่าผู้ใช้ล็อกอินแล้วหรือไม่
-            if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
-                $user_name = $_SESSION['user_name'];
-                $user_type = $_SESSION['user_type'];  // ดึง user_type จาก session
-            } else {
-                $user_name = 'Guest';
-                $user_type = '';  // ถ้ายังไม่ได้ล็อกอิน ไม่แสดง user_type
-            }
-          ?>
+      <div class="image">
+        <img src="../uploads/avatar5.png" class="img-circle elevation-2" alt="User Image">
+      </div>
+      <div class="info">
+        <?php
+        // ตรวจสอบว่าผู้ใช้ล็อกอินแล้วหรือไม่
+          if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
+              $user_name = $_SESSION['user_name'];
+              $user_type = $_SESSION['user_type_name'];  // ดึง user_type จาก session
+          } else {
+              $user_name = 'Guest';
+              $user_type = '';  // ถ้ายังไม่ได้ล็อกอิน ไม่แสดง user_type
+          }
+        ?>
 
-        <a href="" target="_blank" class="d-block">
+        <span class="d-block">
             <?php echo htmlspecialchars($user_name) . ' (' . htmlspecialchars($user_type) . ')'; ?> <!-- แสดงชื่อผู้ใช้พร้อมประเภทผู้ใช้ -->
-        </a>     
+        </span>     
       </div>
     </div>
 
@@ -82,12 +82,17 @@
 
           <div class="user-panel mt-2 pb-3 mb-2 d-flex"></div>
           <li class="nav-item">
-            <a href="logout.php" class="nav-link text-danger">
+          <a href="logout.php" class="nav-link text-danger" onclick="return confirmLogout();">
               <i class="nav-icon fas fa-sign-out-alt"></i>
               <p>ออกจากระบบ</p>
-            </a>
+          </a>
           </li>
-        </ul>
+          </ul>
+          <script>
+          function confirmLogout() {
+              return confirm("แน่ใจหรือว่าต้องการออกจากระบบ?");
+          }
+          </script>
       </nav>
       <!-- /.sidebar-menu -->
       <!-- http://fordev22.com/ -->

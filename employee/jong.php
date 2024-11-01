@@ -1,5 +1,6 @@
 <?php
 $menu = "jong";
+include("menu_session.php");  // ดึงข้อมูลผู้ใช้จาก session
 include("header.php");
 
 // การแสดงผลข้อผิดพลาด
@@ -80,9 +81,10 @@ $result = mysqli_query($conn, $sql);
     padding: 20px;
 }
 
-.modal-header, .modal-footer {
+.modal-header {
     padding-bottom: 15px;
     padding-top: 15px;
+    border-bottom: 1px solid #000000; /* เพิ่มเส้นขอบด้านล่างสีดำ */
 }
 
 .modal-title {
@@ -124,31 +126,36 @@ $result = mysqli_query($conn, $sql);
                 <div class="col-md-12">
                     <h4>เลือกห้องซ้อม :</h4>
                     <div class="row">
-                        <?php
-                        // Display room data
-                        $sql = "SELECT * FROM room_tb";
+                    <?php
+                        // แสดงข้อมูลห้อง
+                        $sql = "SELECT room_tb.*, room_type_tb.room_type_name 
+                                FROM room_tb 
+                                LEFT JOIN room_type_tb ON room_tb.room_type = room_type_tb.room_type_id";
                         $result = $conn->query($sql);
 
-                        if ($result->num_rows > 0) {
-                            while ($room = $result->fetch_assoc()) {
-                                $room_type = $room['room_type'];
-                                $room_price = $room['room_price'];
-
-                                echo '<div class="col-md-4">';
-                                echo '<div class="card" id="card-' . $room['room_type'] . '" onclick="openReserveModal(\'' . $room['room_type'] . '\', ' . $room_price . ')">';
-                                echo '<img src="../uploads/' . $room['room_img'] . '" class="card-img-top" alt="Room Image">';
-                                echo '<div class="card-body">';
-                                echo '<h5 class="card-type">' . $room['room_type'] . ' (ความจุ ' . $room['room_capacity'] . ' คน)</h5>';
-                                echo '<p class="card-text">' . $room['room_detail'] . ' </p>';
-                                echo '<h6 class="text-success">ราคา : ' . $room['room_price'] . ' บาท/ชม.</h6>';
-
-                                echo '</div>';
-                                echo '</div>';
-                                echo '</div>';
+                        if ($result->num_rows > 0) { // ตรวจสอบว่ามีข้อมูลห้องที่ถูกดึงมาหรือไม่
+                            while ($room = $result->fetch_assoc()) { // วนลูปเพื่อดึงข้อมูลแต่ละแถวเป็น associative array
+                                $room_type_name = $room['room_type_name']; 
+                                $room_price = $room['room_price']; 
+                        
+                                echo '<div class="col-md-4">'; 
+                                echo '<div class="card" id="card-' . $room['room_type'] . '" onclick="openReserveModal(\'' . $room_type_name . '\', ' . $room_price . ')">';
+                                // สร้าง card สำหรับแสดงข้อมูลห้อง และเพิ่มฟังก์ชัน onclick เพื่อเปิด modal พร้อมส่งชื่อประเภทห้องและราคาไปยังฟังก์ชัน openReserveModal
+                        
+                                echo '<img src="../uploads/' . $room['room_img'] . '" class="card-img-top" alt="Room Image">'; 
+                                echo '<div class="card-body">'; 
+                                echo '<h5 class="card-type">' . $room_type_name . ' (ความจุ ' . $room['room_capacity'] . ' คน)</h5>';
+                                echo '<p class="card-text">รายละเอียด : ' . $room['room_detail'] . ' </p>'; 
+                                echo '<h6 class="text-success">ราคา : ' . $room['room_price'] . ' บาท/ชม.</h6>'; 
+                        
+                                echo '</div>'; 
+                                echo '</div>'; 
+                                echo '</div>'; 
                             }
                         } else {
-                            echo "ไม่พบข้อมูลห้อง";
+                            echo "ไม่พบข้อมูลห้อง"; // แสดงข้อความเมื่อไม่มีข้อมูลห้องในฐานข้อมูล
                         }
+                        
                         ?>
                     </div>
                 </div>
@@ -167,10 +174,10 @@ $result = mysqli_query($conn, $sql);
                                 <div class="modal-body">
                                     <!-- Date and Time Inputs -->
                                     <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label for="reserve_date">วันที่ :</label>
-                                        <input type="date" class="form-control" id="reserve_date" name="reserve_date" value="<?php echo $reserve_date; ?>" required>
-                                    </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="reserve_date">วันที่ :</label>
+                                            <input type="date" class="form-control" id="reserve_date" name="reserve_date" value="<?php echo $reserve_date; ?>" required>
+                                        </div>
                                         <div class="col-md-3 mb-3">
                                             <label for="reserve_time1">เวลา (เริ่ม) :</label>
                                             <select class="form-control" id="reserve_time1" name="reserve_time1" required onchange="calculateTotal()">
@@ -186,7 +193,7 @@ $result = mysqli_query($conn, $sql);
                                             </select>
                                         </div>
                                         <div class="col-md-3 mb-3">
-                                            <label for="reserve_time2">เวลา (ถึง) :</label>
+                                            <label for="reserve_time2">เวลา (สิ้นสุด) :</label>
                                             <select class="form-control" id="reserve_time2" name="reserve_time2" required onchange="calculateTotal()">
                                             <option value="">--:--</option>
                                                 <?php 
@@ -208,7 +215,7 @@ $result = mysqli_query($conn, $sql);
                                             <input type="text" class="form-control" id="modal_reserve_type" name="reserve_type" readonly required>
                                         </div>
                                         <div class="col-md-3 mb-3">
-                                            <label for="reserve_price">ราคาห้อง/ชม.:</label>
+                                            <label for="reserve_price">ราคาห้อง/ชม. :</label>
                                             <input type="number" class="form-control" id="reserve_price" name="reserve_price"  step="0.01" readonly required>
                                         </div>
                                         <div class="col-md-3 mb-3">
@@ -219,7 +226,6 @@ $result = mysqli_query($conn, $sql);
                                             <label for="reserve_total">ยอดรวม :</label>
                                             <input type="number" class="form-control" id="reserve_total" name="reserve_total" readonly>
                                         </div>
-
                                     </div>
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
@@ -228,19 +234,16 @@ $result = mysqli_query($conn, $sql);
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <label for="reserve_telphone">เบอร์โทร :</label>
-                                            <input type="text" class="form-control" id="reserve_telphone" name="reserve_telphone" required>
+                                            <input type="text" class="form-control" id="reserve_telphone" name="reserve_telphone" maxlength="10" required>
+                                            <div class="invalid-feedback">**กรุณากรอกเบอร์โทรให้ครบ 10 ตัวเลข</div>
                                         </div>
                                     </div>
-                                        <div class="mb-3">
-                                            <label for="reserve_address">ที่อยู่ :</label>
-                                            <textarea class="form-control" id="reserve_address" name="reserve_address" rows="3" required></textarea>
-                                        </div>
-                                
+                            
                                 </div>
                                 
                                 <div class="modal-footer">
+                                    <button class="btn btn-danger" type="submit" onclick="return validatePhone()">บันทึก</button>
                                     <button class="btn btn-secondary" type="button" data-dismiss="modal">ยกเลิก</button>
-                                    <button type="submit" class="btn btn-danger">บันทึก</button>
                                 </div>
                             </form>
                         </div>
@@ -279,7 +282,23 @@ document.getElementById('reserve_date').addEventListener('change', function() {
         }
     });
 
-// คำนวณราคา    
+// ฟังก์ชันกำหนดตัวเลขเบอร์โทรให้มีความยาวเท่ากับ 10 ตัวอักษร
+function validatePhone() {
+    const phoneInput = document.getElementById('reserve_telphone');
+    const phoneValue = phoneInput.value;
+
+    // ตรวจสอบว่าเบอร์โทรมีความยาวครบ 10 ตัวอักษรหรือไม่
+    if (phoneValue.length !== 10) {
+        phoneInput.classList.add('is-invalid'); // เพิ่มคลาสเพื่อแสดงข้อความแจ้งเตือน
+        alert('กรุณากรอกเบอร์โทรให้ครบ 10 ตัวเลข');
+        return false; // หยุดการส่งข้อมูล
+    }
+
+    phoneInput.classList.remove('is-invalid'); // ลบคลาสแจ้งเตือนหากครบ
+    return true; // อนุญาตให้ส่งข้อมูล
+}
+
+// ฟังก์ชันคำนวณชั่วโมงและยอดรวม  
 function calculateTotal() {
     var reserveTime1 = document.getElementById('reserve_time1').value;
     var reserveTime2 = document.getElementById('reserve_time2').value;
@@ -300,7 +319,7 @@ function calculateTotal() {
             var hours = Math.floor(diffInMinutes / 60);  // จำนวนชั่วโมงเต็ม
             var minutes = diffInMinutes % 60;  // จำนวนครึ่งชั่วโมงที่เหลือ
 
-            // คำนวณราคาทั้งหมด
+            // คำนวณราคาทั้งหมดหรือยอดรวม
             var totalPrice = (hours * roomPrice) + (minutes > 0 ? 50 : 0);
             document.getElementById('reserve_total').value = totalPrice.toFixed(2); // แสดงยอดรวมทั้งหมด
 
@@ -317,9 +336,14 @@ function calculateTotal() {
         document.getElementById('reserve_hour').value = '0:00';  // รีเซ็ตชั่วโมง
     }
 }
+// เมื่อเลือกเวลาเริ่มหรือเวลาถึงจะเรียกฟังก์ชัน calculateTotal
+document.getElementById('reserve_time1').addEventListener('change', calculateTotal);
+document.getElementById('reserve_time2').addEventListener('change', calculateTotal);
+
 
 </script>
 <script>
+// เช็คเวลาที่จองแล้วในวันและประเภทห้อง โดยการใช้ JavaScript ร่วมกับ jQuery และ AJAX     
 document.getElementById('reserve_date').addEventListener('change', function() {
     var selectedDate = this.value;
     var reserveType = document.getElementById('modal_reserve_type').value;  // ดึงประเภทห้องที่ถูกเลือก
@@ -337,18 +361,19 @@ document.getElementById('reserve_date').addEventListener('change', function() {
 
             // ลบสไตล์ก่อนหน้า
             $('#reserve_time1 option, #reserve_time2 option').each(function() {
-                $(this).prop('disabled', false).css('color', 'black'); // รีเซ็ตสไตล์
+                $(this).prop('disabled', false).css('color', 'green'); // ตั้งค่าเวลาที่ว่างเป็นสีเขียว
             });
 
             // ปิดใช้งานหรือเปลี่ยนสีของ option ที่ตรงกับเวลาที่จองแล้ว
             $('#reserve_time1 option, #reserve_time2 option').each(function() {
                 if (reservedTimes.includes(this.value)) {
-                    $(this).prop('disabled', true).css('color', 'red'); // เปลี่ยนสีเป็นสีแดงหรือปิดใช้งาน
+                    $(this).prop('disabled', true).css('color', 'red'); // เปลี่ยนสีเป็นสีแดงทึบสำหรับเวลาที่ไม่ว่าง
                 }
             });
         }
     });
 });
+
 
 </script>
 

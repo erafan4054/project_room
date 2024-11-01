@@ -1,7 +1,8 @@
 <?php
-$menu = "room.edit";
-include("menu_session.php");  // ดึงข้อมูลผู้ใช้จาก session
+$menu = "room.insert";
+include("menu_session.php");
 include("header.php");
+
 
 // เชื่อมต่อฐานข้อมูล
 $servername = "localhost";
@@ -11,14 +12,11 @@ $dbname = "project_room";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-// ตรวจสอบการเชื่อมต่อ
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// ตรวจสอบการส่งข้อมูลจากฟอร์ม
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $room_id = $_POST['room_id'] ?? null;
     $room_type = $_POST['room_type'];
     $room_price = $_POST['room_price'];
     $room_capacity = $_POST['room_capacity'];
@@ -31,22 +29,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         mkdir($target_dir, 0777, true);
     }
 
-    // อัปโหลดไฟล์รูปภาพ
     if ($room_img && move_uploaded_file($_FILES["room_img"]["tmp_name"], $target_file)) {
-        if ($room_id) {
-            // การอัพเดทข้อมูล
-            $sql = "UPDATE room_tb SET room_type='$room_type', room_price='$room_price', room_capacity='$room_capacity', room_detail='$room_detail', room_img='$room_img' WHERE room_id='$room_id'";
-        } else {
-            // การเพิ่มข้อมูล
-            $sql = "INSERT INTO room_tb (room_type, room_price, room_capacity, room_detail, room_img) VALUES ('$room_type', '$room_price','$room_capacity', '$room_detail', '$room_img')";
-        }
-
+        $sql = "INSERT INTO room_tb (room_type, room_price, room_capacity, room_detail, room_img) VALUES ('$room_type', '$room_price','$room_capacity', '$room_detail', '$room_img')";
+        
         if ($conn->query($sql) === TRUE) {
             echo "<script>
-                alert('บันทึกข้อมูลใหม่เรียบร้อยแล้ว');
+                alert('บันทึกข้อมูลเรียบร้อย');
                 window.location.href = 'room.php';
             </script>";
-
         } else {
             echo "Error: " . $sql . "<br>" . $conn->error;
         }
@@ -55,46 +45,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-// ตรวจสอบการแก้ไขข้อมูล
-$edit_id = $_GET['edit'] ?? null;
-if ($edit_id) {
-    $sql = "SELECT room_type, room_price, room_capacity, room_detail FROM room_tb WHERE room_id='$edit_id'";
-    $result = $conn->query($sql);
-
-    if ($result && $result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-        echo "<script>
-            document.addEventListener('DOMContentLoaded', function() {
-                document.getElementById('room_id').value = '$edit_id';
-                document.getElementsByName('room_type')[0].value = '".htmlspecialchars($row['room_type'], ENT_QUOTES)."';
-                document.getElementsByName('room_price')[0].value = '".htmlspecialchars($row['room_price'], ENT_QUOTES)."';
-                document.getElementsByName('room_capacity')[0].value = '".htmlspecialchars($row['room_capacity'], ENT_QUOTES)."';
-                document.getElementsByName('room_detail')[0].value = '".htmlspecialchars($row['room_detail'], ENT_QUOTES)."';
-            });
-        </script>";
-    }
-}
-
-// ดึงข้อมูลจากฐานข้อมูล
-$sql = "SELECT room_id, room_type, room_capacity, room_price, room_detail, room_img FROM room_tb";
-$result = $conn->query($sql);
-
-// ดึงข้อมูลประเภทห้องจากตาราง room_type_tb
+// ดึงข้อมูลประเภทห้องจากฐานข้อมูล
 $sql_room_type = "SELECT room_type_id, room_type_name FROM room_type_tb";
 $result_room_type = $conn->query($sql_room_type);
 
 
+$conn->close();
 ?>
-
 <!-- Content Header (Page header) -->
 <section class="content-header">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-6">
-                <h1><i class="nav-icon fas fa-edit"></i> แก้ไขข้อมูลห้องดนตรี</h1>
-            </div>
-        </div>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-6">
+        <h1><i class="nav-icon fas fa-laptop-medical"></i> เพิ่มข้อมูลห้องดนตรี</h1>
+      </div>
+      <div class="col-md-6 text-right">
+        <a href="room.php?action=add" class="btn btn-danger">
+          <i class="nav-icon fas fa-guitar"></i> รายการบันทึกห้องดนตรี
+        </a>
+      </div>
     </div>
+  </div>
 </section>
 
 <!-- Main content -->
@@ -104,7 +75,7 @@ $result_room_type = $conn->query($sql_room_type);
       <form action="" method="post" enctype="multipart/form-data" class="needs-validation" novalidate onsubmit="return validateForm()">  
         <div class="form-row">
           <input type="hidden" name="room_id" id="room_id"> 
-          <div class="col-md-3 mb-3">  
+            <div class="col-md-3 mb-3">  
             <label for="validationCustom01">ประเภทห้อง :</label>
                 <select class="form-control" name="room_type" required>
                   <option value="">-- กรุณาเลือกประเภทห้อง --</option>
@@ -123,6 +94,7 @@ $result_room_type = $conn->query($sql_room_type);
                 </select>
                 <div class="invalid-feedback">**กรุณาเลือกประเภทห้อง</div>
             </div>
+            
           <div class="col-md-3 mb-3">
             <label for="validationCustom01">ราคาห้อง/ชม. :</label>
             <input type="text" class="form-control" name="room_price" required>
@@ -145,8 +117,8 @@ $result_room_type = $conn->query($sql_room_type);
             <div class="invalid-feedback">**กรุณากรอกข้อมูล</div>
           </div>
         </div>
-        <button class="btn btn-danger" type="submit" name="submit">บันทึกการแก้ไข</button>
-        <a href="room.php" class="btn btn-secondary">กลับไปหน้ารายการ</a>
+        <button class="btn btn-danger" type="submit" name="submit">บันทึก</button>
+        <button class="btn btn-secondary" type="button" onclick="resetForm()">ยกเลิก</button>
       </form>
     </div>
   </div>
@@ -182,7 +154,3 @@ function resetForm() {
 </script>
 
 <?php include('footer.php'); ?>
-
-<?php
-$conn->close();
-?>
