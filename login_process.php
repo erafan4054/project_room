@@ -28,47 +28,47 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     WHERE 
         user_tb.username = ?";
 
-// เตรียมคำสั่ง และตรวจสอบรหัสผ่าน
-if ($stmt = $conn->prepare($sql)) {
-    $stmt->bind_param("s", $username);
+    if ($stmt = $conn->prepare($sql)) {
+        $stmt->bind_param("s", $username);
 
-    if ($stmt->execute()) {
-        $stmt->store_result();
+        if ($stmt->execute()) {
+            $stmt->store_result();
 
-        if ($stmt->num_rows == 1) {
-            // เพิ่มการดึงข้อมูล user_type_name จากการ bind_result ด้วย
-            $stmt->bind_result($user_id, $username, $password, $user_type, $user_name, $user_type_name);
-            if ($stmt->fetch()) {
+            if ($stmt->num_rows == 1) {
+                $stmt->bind_result($user_id, $db_username, $db_password, $user_type, $user_name, $user_type_name);
+                if ($stmt->fetch()) {
+                    // เปรียบเทียบรหัสผ่านแบบ plain text
+                    if ($password === $db_password) {
+                        $_SESSION['loggedin'] = true;
+                        $_SESSION['user_id'] = $user_id;
+                        $_SESSION['username'] = $db_username;
+                        $_SESSION['user_type'] = $user_type;
+                        $_SESSION['user_name'] = $user_name;
+                        $_SESSION['user_type_name'] = $user_type_name;
 
-                    $_SESSION['loggedin'] = true;
-                    $_SESSION['user_id'] = $user_id;
-                    $_SESSION['username'] = $username;
-                    $_SESSION['user_type'] = $user_type;
-                    $_SESSION['user_name'] = $user_name;  // บันทึก user_name ลงใน session
-                    $_SESSION['user_type_name'] = $user_type_name;  // บันทึก user_type_name ลงใน session
-
-                    // ตรวจสอบ user_type และเปลี่ยนเส้นทางตามประเภท
-                    if ($user_type_name == 'admin') {
-                        header("location: index.php");
-                    } elseif ($user_type_name == 'employee') {
-                        header("location: employee/index.php");
+                        if ($user_type_name == 'admin') {
+                            header("location: index.php");
+                        } elseif ($user_type_name == 'employee') {
+                            header("location: employee/index.php");
+                        } else {
+                            echo "ประเภทผู้ใช้ไม่ถูกต้อง.";
+                        }
+                        $stmt->close();  // ปิด statement หลังการใช้งาน
+                        $conn->close();  // ปิด connection หลังการใช้งาน
+                        exit;
                     } else {
-                        echo "ประเภทผู้ใช้ไม่ถูกต้อง.";
+                        echo "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง.";
                     }
-                    exit;
-                } else {
-                    echo "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง2.";
                 }
+            } else {
+                echo "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง.";
             }
         } else {
-            echo "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง.";
+            echo "อ๊ะ! บางอย่างผิดพลาด. กรุณาลองใหม่อีกครั้งในภายหลัง.";
         }
-    } else {
-        echo "อ๊ะ! บางอย่างผิดพลาด. กรุณาลองใหม่อีกครั้งในภายหลัง.";
+        $stmt->close();  // ปิด statement ถ้ายังไม่ได้ปิด
     }
 
-    $stmt->close();
+    $conn->close();  // ปิด connection ถ้ายังไม่ได้ปิด
 }
-
-$conn->close();
 ?>
