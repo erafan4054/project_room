@@ -177,9 +177,21 @@ $formatted_date = $reserve_date->format('d-m-Y'); // แปลงเป็น 'D
                 <td><?php echo htmlspecialchars($data['reserve_hour']); ?> ชั่วโมง</td>
                 <td>
                     <?php
-                    echo !empty($data['reserve_more']) && $data['reserve_more'] != '0' 
-                        ? htmlspecialchars($data['reserve_more']) . ' ชั่วโมง' 
-                        : 'ไม่มี';
+                    if (!empty($data['reserve_more']) && $data['reserve_more'] != '0') {
+                        $hours = floatval($data['reserve_more']); // แปลงค่าเป็นตัวเลขทศนิยม
+                        $fullHours = floor($hours); // ส่วนที่เป็นชั่วโมงเต็ม
+                        $minutes = ($hours - $fullHours) * 60; // คำนวณนาทีจากส่วนทศนิยม
+
+                        if ($minutes == 0) {
+                            echo htmlspecialchars($fullHours) . ' ชั่วโมง';
+                        } else if ($fullHours == 0) {
+                            echo htmlspecialchars($minutes) . ' นาที';
+                        } else {
+                            echo htmlspecialchars($fullHours . ':' . str_pad($minutes, 2, '0', STR_PAD_LEFT) . ' นาที');
+                        }
+                    } else {
+                        echo 'ไม่มี';
+                    }
                     ?>
                 </td>
             </tr>

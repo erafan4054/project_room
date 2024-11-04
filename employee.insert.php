@@ -98,17 +98,17 @@ $results = $conn->query($querys);
                         <div class="invalid-feedback">**กรุณากรอกข้อมูล</div>
                     </div>
                     <div class="col-md-6 mb-3">
-    <label for="password">รหัสผ่าน :</label>
-    <div class="input-group">
-        <input type="password" class="form-control" name="password" id="password" required>
-        <div class="input-group-append">
-            <span class="input-group-text" onclick="togglePasswordVisibility()">
-                <i class="fas fa-eye" id="toggleIcon"></i>
-            </span>
-        </div>
-    </div>
-    <div class="invalid-feedback">**กรุณากรอกข้อมูล</div>
-</div>
+                        <label for="password">รหัสผ่าน :</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" name="password" id="password" required>
+                            <div class="input-group-append">
+                                <span class="input-group-text" onclick="togglePasswordVisibility()">
+                                    <i class="fas fa-eye" id="toggleIcon"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="invalid-feedback">**กรุณากรอกข้อมูล</div>
+                    </div>
                     <div class="col-md-6 mb-3">
                         <label for="validationCustom01">ประเภทผู้ใช้ :</label>
                         <div>
