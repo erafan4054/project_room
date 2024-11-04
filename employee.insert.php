@@ -98,10 +98,17 @@ $results = $conn->query($querys);
                         <div class="invalid-feedback">**กรุณากรอกข้อมูล</div>
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label for="validationCustom01">รหัสผ่าน :</label>
-                        <input type="text" class="form-control" name="password" required>
-                        <div class="invalid-feedback">**กรุณากรอกข้อมูล</div>
-                    </div>
+    <label for="password">รหัสผ่าน :</label>
+    <div class="input-group">
+        <input type="password" class="form-control" name="password" id="password" required>
+        <div class="input-group-append">
+            <span class="input-group-text" onclick="togglePasswordVisibility()">
+                <i class="fas fa-eye" id="toggleIcon"></i>
+            </span>
+        </div>
+    </div>
+    <div class="invalid-feedback">**กรุณากรอกข้อมูล</div>
+</div>
                     <div class="col-md-6 mb-3">
                         <label for="validationCustom01">ประเภทผู้ใช้ :</label>
                         <div>
@@ -149,27 +156,28 @@ function validateForm() {
     const password = document.querySelector('[name="password"]').value.trim();
     const userType = document.querySelector('[name="user_type"]:checked');
 
+    // ตรวจสอบว่ากรอกข้อมูลครบทุกช่องหรือไม่
     if (!userName || !userEmail || !userPhone || !username || !password || !userType) {
         alert('กรุณากรอกข้อมูลให้ครบทุกช่อง');
-        return false;
+        return false; // หยุดการทำงานที่นี่หากข้อมูลไม่ครบ
     }
-    return validatePhone(); // ตรวจสอบเบอร์โทรด้วย
-}
 
-// ฟังก์ชันกำหนดตัวเลขเบอร์โทรให้มีความยาวเท่ากับ 10 ตัวอักษร
-function validatePhone() {
-    const phoneInput = document.getElementById('user_telphone'); 
-    const phoneValue = phoneInput.value.replace(/\D/g, ''); 
-
-    if (phoneValue.length !== 10) {
-        phoneInput.classList.add('is-invalid'); 
+    // ตรวจสอบว่ากรอกเบอร์โทรแล้วหรือยัง
+    if (userPhone === '') {
         alert('กรุณากรอกเบอร์โทรให้ครบ 10 ตัวเลข');
-        return false; 
+        return false; // หยุดการทำงานหากไม่ได้กรอกเบอร์โทร
     }
 
-    phoneInput.classList.remove('is-invalid'); 
-    return true; 
+    // ตรวจสอบความยาวของเบอร์โทรให้ครบ 10 ตัวเลข
+    const phoneValue = userPhone.replace(/\D/g, ''); // ลบตัวอักษรที่ไม่ใช่ตัวเลขออก
+    if (phoneValue.length !== 10) {
+        alert('กรุณากรอกเบอร์โทรให้ครบ 10 ตัวเลข');
+        return false; // หยุดการทำงานหากเบอร์โทรไม่ครบ
+    }
+
+    return true; // ผ่านการตรวจสอบทั้งหมด
 }
+
 
 document.getElementById('user_telphone').addEventListener('input', function(e) {
     let value = e.target.value.replace(/\D/g, ''); 
@@ -180,6 +188,22 @@ document.getElementById('user_telphone').addEventListener('input', function(e) {
 
     e.target.value = value; 
 });
+</script>
+<script>
+function togglePasswordVisibility() {
+    const passwordField = document.getElementById('password');
+    const toggleIcon = document.getElementById('toggleIcon');
+    
+    if (passwordField.type === 'password') {
+        passwordField.type = 'text';
+        toggleIcon.classList.remove('fa-eye');
+        toggleIcon.classList.add('fa-eye-slash');
+    } else {
+        passwordField.type = 'password';
+        toggleIcon.classList.remove('fa-eye-slash');
+        toggleIcon.classList.add('fa-eye');
+    }
+}
 </script>
 
 <?php

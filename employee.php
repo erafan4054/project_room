@@ -88,7 +88,8 @@ $result = $conn->query($sql);
                                         echo "<td>" . $row["user_telphone"] . "</td>";
                                         echo "<td>" . $row["username"] . "</td>";
                                         echo "<td>" . $row["user_type_name"] . "</td>";
-                                        echo "<td>" . $row["password"] . "</td>";
+                                        echo "<td>*********</td>";
+                                        // echo "<td>" . $row["password"] . "</td>";
                                         echo '<td>
                                                 <a class="btn btn-warning btn-xs" href="employee.edit.php?edit=' . $row["user_id"] . '">
                                                   <i class="fas fa-pencil-alt"></i> แก้ไข
