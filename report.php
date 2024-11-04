@@ -240,26 +240,26 @@ $result = $conn->query($sql);
                     echo "<td>{$row['reserve_price']} บาท</td>";
                     echo "<td>{$row['reserve_hour']} ชม.</td>";
                     echo "<td>";
-                          if (!empty($row['reserve_more']) && $row['reserve_more'] != '0') {
-                              // ตรวจสอบค่าของ reserve_more และแสดงผลตามที่กำหนด
-                              switch ($row['reserve_more']) {
-                                  case '0.5':
-                                      echo '30 นาที';
-                                      break;
-                                  case '1':
-                                      echo '1 ชม.';
-                                      break;
-                                  case '1.5':
-                                      echo '1:30 ชม.';
-                                      break;
-                                  default:
-                                      echo $row['reserve_more'] . ' ชม.';
-                                      break;
+                              if (!empty($row['reserve_more']) && $row['reserve_more'] != '0') {
+                                  // ตรวจสอบค่าของ reserve_more และแสดงผลตามที่กำหนด
+                                  switch ($row['reserve_more']) {
+                                      case '0.5':
+                                          echo '30 นาที';
+                                          break;
+                                      case '1':
+                                          echo '1 ชม.';
+                                          break;
+                                      case '1.5':
+                                          echo '1:30 นาที';
+                                          break;
+                                      default:
+                                          echo $row['reserve_more'] . ' ชม.';
+                                          break;
+                                  }
+                              } else {
+                                  echo 'ไม่มี';
                               }
-                          } else {
-                              echo 'ไม่มี';
-                          }
-                          echo "</td>";
+                    echo "</td>";
                     echo "<td>{$row['reserve_total']} บาท</td>";
                     echo "<td>{$row['reserve_name']}</td>";
                     echo "<td>{$row['reserve_telphone']}</td>";
